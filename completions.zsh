@@ -31,7 +31,7 @@ zstyle ':fzf-tab:*' fzf-flags \
   --pointer=' ' \
   --separator='─' \
   --scrollbar='▌' \
-  --color='fg:#91aab0,fg+:#2ecbcb,bg:-1,bg+:#1b292f' \
+  --color='fg:#91aab0,fg+:#2ecbcb,bg:-1,bg+:#1b3117' \
   --color='hl:#5ea0f5,hl+:#10b9f2' \
   --color='info:#7a8288,spinner:#b57bea,header:#7a8288' \
   --color='prompt:#c68bf9,pointer:#5af2d6,marker:#2bd3be' \

@@ -46,7 +46,7 @@ setopt PATH_DIRS
 
 WORDCHARS=${WORDCHARS/\/}
 
-export EDITOR="vim"
+export EDITOR="subl -a -w"
 # PATH tweaks
 export PATH="$HOME/bin:$PATH"
 

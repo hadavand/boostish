@@ -29,6 +29,15 @@ bindkey '^\' autosuggest-clear
 
 autoload -Uz edit-command-line; zle -N edit-command-line; bindkey '^X^E' edit-command-line
 
-sudo-command-line(){ [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"; CURSOR=${#BUFFER}; }
+sudo-command-line(){ zle autosuggest-clear; [[ -z $BUFFER ]] && zle up-history; [[ $BUFFER == sudo\ * ]] && BUFFER=${BUFFER#sudo } || BUFFER="sudo $BUFFER"; CURSOR=${#BUFFER}; zle autosuggest-fetch; zle redisplay; }
 zle -N sudo-command-line
-bindkey '^X!' sudo-command-line
+bindkey '!!' sudo-command-line
+
+expand-alias-clean() {
+  zle autosuggest-clear
+  zle _expand_alias
+  zle autosuggest-fetch
+  zle redisplay
+}
+zle -N expand-alias-clean
+bindkey '@@' expand-alias-clean
