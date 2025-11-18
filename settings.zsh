@@ -1,0 +1,13 @@
+if ! typeset -f _zsh_autosuggest_bind_widget >/dev/null 2>&1 && \
+   ! (( $+functions[autosuggest-accept] ))
+then
+  return 0
+fi
+
+: ${BOOSTISH_SUGGESTIONS_HIGHLIGHT_STYLE:="fg=#767676,bold,underline"}
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="$BOOSTISH_SUGGESTIONS_HIGHLIGHT_STYLE"
+
+: ${BOOSTISH_SUGGESTIONS_STRATEGY:="history completion"}
+ZSH_AUTOSUGGEST_STRATEGY=(${=BOOSTISH_SUGGESTIONS_STRATEGY})
+
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="${BOOSTISH_SUGGESTIONS_BUFFER_MAX_SIZE:-50}"
