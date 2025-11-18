@@ -56,6 +56,10 @@ if (( $+commands[bat] )); then
   alias bat='bat --paging=never'
 fi
 
+if (( $+commands[subl] )); then
+  alias subl='subl --add'
+fi
+
 # Docker aliases
 if (( $+commands[docker] )); then
   # build / images
