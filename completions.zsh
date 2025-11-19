@@ -45,11 +45,3 @@ fpath=("$HOME/.zsh/completions" $fpath)
 
 autoload -Uz compinit
 compinit -u
-
-if command -v docker >/dev/null 2>&1; then
-    source <(docker completion zsh)
-fi
-
-if command -v k9s >/dev/null 2>&1; then
-    source <(k9s completion zsh)
-fi

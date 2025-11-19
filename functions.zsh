@@ -41,10 +41,6 @@ bgnotify_formatted() {
   bgnotify "$icon $title [$cmd]" "⏱ $duration • $preview"
 }
 
-history_top10() {
-  history | awk '{print $2}' | sort | uniq -c | sort -nr | head -10
-}
-
 weather() { local city=${*:-Tehran}; curl -s "http://wttr.in/${city// /+}"; }
 
 function geoip() {
@@ -114,4 +110,21 @@ color_code_256() {
   for code in {0..255}; do
     echo "\e[38;5;${code}m"'\\e[38;5;'"$code"m"\e[0m"
   done
+}
+
+# Default config (can be overridden before calling the function)
+typeset -g BOOSTISH_SSH_USER="${BOOSTISH_SSH_USER:-majid}"
+typeset -g BOOSTISH_SSH_PREFIX="${BOOSTISH_SSH_PREFIX:-my-}"
+
+boostish_ssh_aliases_from_hosts() {
+  local hosts_file="${1:-/etc/hosts}"
+  local user="${BOOSTISH_SSH_USER}"
+  local prefix="${BOOSTISH_SSH_PREFIX}"
+  local ip name rest
+
+  while read -r ip name rest; do
+    [[ -z $ip || $ip == \#* || -z $name ]] && continue
+    [[ -n $prefix && $name != ${prefix}* ]] && continue
+    alias "$name"="ssh ${user}@${ip}"
+  done < <(grep -Ev '^\s*#|^\s*$' "$hosts_file")
 }

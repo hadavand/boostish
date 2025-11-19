@@ -37,8 +37,26 @@ alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
 alias fgrep='fgrep --colour=auto'
 
+function ip() {
+  if [ -t 1 ]; then
+    command ip -color "$@"
+  else
+    command ip "$@"
+  fi
+}
+
+function zombies() {
+  ps -eal | awk '{ if ($2 == "Z") {print $4}}'
+}
+
 alias pg='ping 8.8.8.8 -c 5'
 alias watch='watch -n 1'
+alias paths='print -l $path'
+alias fpaths='print -l $fpath'
+alias hist10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
+
+alias python="python3"
+alias apuu="sudo apt update && sudo apt upgrade"
 alias persianfonts='fc-list :lang=fa : family | sort | uniq | pr -3t'
 
 if (( $+commands[lsd] )); then
@@ -47,6 +65,10 @@ if (( $+commands[lsd] )); then
     alias l='ls -l'
     alias la='ls -la'
     alias lt='ls --tree'
+fi
+
+if (( $+commands[ansible-playbook] )); then
+    alias ap='ansible-playbook'
 fi
 
 if (( $+commands[bat] )); then
@@ -117,3 +139,19 @@ if (( ${+commands[docker-compose]} )) || command docker compose &>/dev/null; the
   alias dck="$dccmd kill"
   unset dccmd
 fi
+
+# alias art='docker compose exec app php artisan'
+
+# Dockerized artisan wrapper
+BOOSTISH_LARAVEL_SERVICE=${BOOSTISH_LARAVEL_SERVICE:-app}
+
+art() {
+  if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
+    docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
+  else
+    printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
+    return 1
+  fi
+}
+
+artisan() { art "$@"; }

@@ -1,0 +1,31 @@
+#compdef passgen
+
+_passgen() {
+  local -a lengths strengths
+
+  lengths=(
+    '8:short'
+    '12:normal'
+    '16:strong (default)'
+    '24:long'
+    '32:very long'
+    '64:insane'
+  )
+
+  strengths=(
+    '1:lowercase only'
+    '2:lower+upper'
+    '3:letters+digits (default)'
+    '4:letters+digits+symbols'
+  )
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[show help and usage]' \
+    '1:length:->len' \
+    '2:strength:->str' && return 0
+
+  case $state in
+    len) _describe -t lengths 'password length' lengths ;;
+    str) _describe -t strengths 'strength level' strengths ;;
+  esac
+}
