@@ -43,24 +43,15 @@ bgnotify_formatted() {
 
 weather() { local city=${*:-Tehran}; curl -s "http://wttr.in/${city// /+}"; }
 
-function geoip() {
-  if [[ -z $1 ]]; then
-    curl http://ident.me 
-    return
-  fi
-  curl https://api.ip.sb/geoip/$1 | jq
-}
-
 geoip() {
   local ip jq_ok=0
   command -v jq >/dev/null 2>&1 && jq_ok=1
 
   if [[ -t 0 ]]; then
     ip=${1:-}
-
     if [[ -z "$ip" ]]; then
-      curl -s https://ident.me; echo
-      return
+      ip=$(curl -s https://ident.me)
+      [[ -z "$ip" ]] && { echo "geoip: unable to get public IP"; return 1; }
     fi
 
     if (( jq_ok )); then
@@ -127,4 +118,27 @@ boostish_ssh_aliases_from_hosts() {
     [[ -n $prefix && $name != ${prefix}* ]] && continue
     alias "$name"="ssh ${user}@${ip}"
   done < <(grep -Ev '^\s*#|^\s*$' "$hosts_file")
+}
+
+# Default proxy config (override in .zshrc if needed)
+: ${BOOSTISH_PROXY_URL:="http://127.0.0.1:2080"}
+: ${BOOSTISH_NO_PROXY:="localhost,127.0.0.1,::1"}
+
+pxon() {
+  local url="${1:-$BOOSTISH_PROXY_URL}"
+  if [[ -z "$url" ]]; then
+    echo "proxy-on: no proxy URL set (set BOOSTISH_PROXY_URL or pass url as arg)"
+    return 1
+  fi
+  export HTTP_PROXY="$url" HTTPS_PROXY="$url"
+  export http_proxy="$url" https_proxy="$url"
+  export NO_PROXY="$BOOSTISH_NO_PROXY" no_proxy="$BOOSTISH_NO_PROXY"
+  echo "🟢 Proxy ON"
+  geoip
+}
+
+pxoff() {
+  unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
+  unset NO_PROXY no_proxy
+  echo "🔴 Proxy OFF"
 }

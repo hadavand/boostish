@@ -1,3 +1,9 @@
+if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
+  PROMPT='%F{244}%* %F{81}%n%f%F{240}@%m %F{39}%~%f %# '
+  RPROMPT='%F{244}%?%f'
+  return 0
+fi
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -20,17 +26,18 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-rust
 
 # Plugins --------------------
+zinit load MichaelAquilina/zsh-you-should-use
 zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
 zinit ice depth=1; zinit light Aloxaf/fzf-tab
 zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1; zinit light zsh-users/zsh-history-substring-search
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
-zi snippet OMZL::git.zsh
-zi snippet OMZP::git
-zi snippet OMZP::bgnotify
-zi snippet OMZP::encode64
-zi snippet OMZP::gh
+zinit snippet OMZL::git.zsh
+zinit snippet OMZP::git
+zinit snippet OMZP::bgnotify
+zinit snippet OMZP::encode64
+zinit snippet OMZP::gh
 
 export BOOSTISH_COMPLETIONS_FILE="$BOOSTISH_CONFIG_DIR/completions.zsh"
 [[ -r $BOOSTISH_COMPLETIONS_FILE ]] && source "$BOOSTISH_COMPLETIONS_FILE"
@@ -46,9 +53,6 @@ export BOOSTISH_SETTINGS_FILE="$BOOSTISH_CONFIG_DIR/settings.zsh"
 
 export BOOSTISH_KEYBINDINGS_FILE="$BOOSTISH_CONFIG_DIR/keybindings.zsh"
 [[ -r $BOOSTISH_KEYBINDINGS_FILE ]] && source "$BOOSTISH_KEYBINDINGS_FILE"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k.zsh"
 [[ -f $BOOSTISH_POWER_LEVEL_FILE ]] && source "$BOOSTISH_POWER_LEVEL_FILE"

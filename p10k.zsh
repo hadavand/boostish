@@ -1,3 +1,6 @@
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 function prompt_my_cpu_temp() {
   [[ -f /sys/class/thermal/thermal_zone0/temp ]] || return
 
