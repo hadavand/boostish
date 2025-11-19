@@ -23,11 +23,14 @@ zinit light-mode for \
 zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
 zinit ice depth=1; zinit light Aloxaf/fzf-tab
 zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
+zinit ice depth=1; zinit light zsh-users/zsh-history-substring-search
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zi snippet OMZL::git.zsh
 zi snippet OMZP::git
 zi snippet OMZP::bgnotify
+zi snippet OMZP::encode64
+zi snippet OMZP::gh
 
 export BOOSTISH_COMPLETIONS_FILE="$BOOSTISH_CONFIG_DIR/completions.zsh"
 [[ -r $BOOSTISH_COMPLETIONS_FILE ]] && source "$BOOSTISH_COMPLETIONS_FILE"
