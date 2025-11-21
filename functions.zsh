@@ -142,3 +142,83 @@ pxoff() {
   unset NO_PROXY no_proxy
   echo "🔴 Proxy OFF"
 }
+
+color_palette_256() {
+    local -a colors
+    for i in {000..255}; do
+        colors+=("%F{$i}$i%f")
+    done
+    print -cP $colors
+}
+
+corlor_print_code() {
+    local color="%F{$1}"
+    echo -E ${(qqqq)${(%)color}}
+}
+
+function color_code_256() {
+  for code in {0..255}; do
+    echo "\e[38;5;${code}m"'\\e[38;5;'"$code"m"\e[0m"
+  done
+}
+
+function color_code_text {
+  for i in 00{2..8} {0{3,4,9},10}{0..7}
+  do echo -e "$i \e[0;${i}mSubdermatoglyphic text\e[00m  \e[1;${i}mSubdermatoglyphic text\e[00m"
+  done
+}
+
+function color_num_text {
+  for i in 00{2..8} {0{3,4,9},10}{0..7}
+  do for j in 0 1
+     do echo -e "$j;$i \e[$j;${i}mSubdermatoglyphic text\e[00m"
+     done
+  done
+}
+
+function color_ansi() {
+  for code in {30..37}; do
+    echo -en "\e[${code}m"'\\e['"$code"'m'"\e[0m"
+    echo -en "  \e[$code;1m"'\\e['"$code"';1m'"\e[0m"
+    echo -en "  \e[$code;3m"'\\e['"$code"';3m'"\e[0m"
+    echo -en "  \e[$code;4m"'\\e['"$code"';4m'"\e[0m"
+    echo -e "  \e[$((code + 60))m"'\\e['"$((code + 60))"'m'"\e[0m"
+  done
+}
+
+function color_truecolor() {
+  for i in {0..255}; do
+    print -Pn '%K{$i}  %k%F{$i}${(l:3::0:)i}%f ' '${${(M)$((i%6)):#3}:+\n}'
+  done
+}
+
+color_hex_preview() {
+  local hex=${1#\#}
+  [[ -z "$hex" || ${#hex} -ne 6 ]] && { echo "Usage: hexpreview #rrggbb"; return 1; }
+
+  local r=$((16#${hex[1,2]}))
+  local g=$((16#${hex[3,4]}))
+  local b=$((16#${hex[5,6]}))
+
+  printf " fg  \e[38;2;%d;%d;%dm████ HEX #%s\e[0m\n" $r $g $b "$hex"
+  printf " bg  \e[48;2;%d;%d;%dm    \e[0m HEX #%s\n"        $r $g $b "$hex"
+}
+
+hexpicker() {
+  command -v fzf >/dev/null 2>&1 || { echo "fzf is required"; return 1; }
+
+  local step=${1:-51} line hex
+  line=$(
+    for ((r=0; r<=255; r+=step)); do
+      for ((g=0; g<=255; g+=step)); do
+        for ((b=0; b<=255; b+=step)); do
+          printf "\e[48;2;%d;%d;%dm    \e[0m  #%02X%02X%02X\n" $r $g $b $r $g $b
+        done
+      done
+    done | fzf --ansi --no-sort --reverse --height=80% --prompt='Color > '
+  ) || return 1
+
+  hex=${line##*\#}      # note: \# so it's literal, نه pattern عجیب
+  hex=${hex%% *}
+  printf '#%s\n' "$hex"
+}

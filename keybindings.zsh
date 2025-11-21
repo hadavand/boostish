@@ -17,8 +17,8 @@ bindkey '\e[1;5C' forward-word    # Ctrl+Right
 unsetopt flowcontrol
 bindkey '^S' history-incremental-pattern-search-forward
 
-bindkey -s '^Xz' 'exec zsh^M'
-bindkey -s '^[^L' '/usr/bin/clear^M'
+bindkey -s '^Xz' ' exec zsh^M'
+bindkey -s '^[^L' ' /usr/bin/clear^M'
 
 bindkey '^ ' autosuggest-accept
 bindkey '^\' autosuggest-clear
@@ -62,3 +62,4 @@ bindkey '^[OB' history-substring-search-down
 # bindkey -M emacs "^O" copybuffer
 # bindkey -M viins "^O" copybuffer
 # bindkey -M vicmd "^O" copybuffer
+

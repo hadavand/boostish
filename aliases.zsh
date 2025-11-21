@@ -32,6 +32,10 @@ alias rd='rmdir'
 alias df='df -h'
 alias du='du -h'
 
+# zero file
+alias zap=': >'
+alias zap0='truncate -s0 --'
+
 # colored grep
 alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
