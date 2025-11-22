@@ -60,7 +60,8 @@ alias fpaths='print -l $fpath'
 alias hist10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
 
 alias python="python3"
-alias apuu="sudo apt update && sudo apt upgrade"
+alias apu="sudo apt update"
+alias apug="sudo apt upgrade"
 alias persianfonts='fc-list :lang=fa : family | sort | uniq | pr -3t'
 
 if (( $+commands[lsd] )); then

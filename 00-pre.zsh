@@ -1,7 +1,3 @@
-if [[ -n "$TILIX_ID" || -n "$VTE_VERSION" ]]; then
-  [[ -r /etc/profile.d/vte.sh ]] && source /etc/profile.d/vte.sh
-fi
-
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
@@ -51,6 +47,14 @@ setopt PATH_DIRS
 WORDCHARS=${WORDCHARS/\/}
 
 export EDITOR="vim"
-# PATH tweaks
+
+# # Safe paste: don't auto-execute pasted commands with newline
+# autoload -Uz bracketed-paste-magic url-quote-magic
+# zle -N bracketed-paste bracketed-paste-magic
+# zle -N self-insert url-quote-magic
+
+# if ! bindkey | grep -q 'bracketed-paste'; then
+#   bindkey '^[[200~' bracketed-paste
+# fi
 
 [ -f ~/.boostish/fzf.zsh ] && source ~/.boostish/fzf.zsh

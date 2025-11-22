@@ -36,3 +36,7 @@ if (( $+commands[helm] )); then
 	  helm completion zsh | tee "$ZSH_CACHE_DIR/completions/_helm" >/dev/null &|
 	fi
 fi
+
+if [[ -n "$TILIX_ID" || -n "$VTE_VERSION" ]]; then
+  [[ -r /etc/profile.d/vte.sh ]] && source /etc/profile.d/vte.sh
+fi

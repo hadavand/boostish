@@ -1,4 +1,5 @@
 # zsh-syntax-highlighting: color palette (hex)
+typeset -g ZSH_HL_WHITE='#ffffff'
 typeset -g ZSH_HL_RED='#e06c75'
 typeset -g ZSH_HL_ORANGE='#ff8700'
 typeset -g ZSH_HL_YELLOW='#e5c07b'
@@ -15,13 +16,13 @@ typeset -g ZSH_HL_OPT_MAGENTA='#ff5fff'
 typeset -gA ZSH_HIGHLIGHT_STYLES
 
 ZSH_HIGHLIGHT_MAXLENGTH=512
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor line)
 
-ZSH_HIGHLIGHT_STYLES[unknown-token]="fg=${ZSH_HL_RED},standout"
+ZSH_HIGHLIGHT_STYLES[unknown-token]="fg=${ZSH_HL_RED}"
 ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#8700ff'
 ZSH_HIGHLIGHT_STYLES[alias]="fg=${ZSH_HL_CYAN}"
 ZSH_HIGHLIGHT_STYLES[suffix-alias]="fg=${ZSH_HL_GREEN},underline"
-ZSH_HIGHLIGHT_STYLES[global-alias]="fg=${ZSH_HL_MAGENTA}"
+ZSH_HIGHLIGHT_STYLES[global-alias]="fg=${ZSH_HL_BLUE},bg=${ZSH_HL_WHITE},standout"
 ZSH_HIGHLIGHT_STYLES[builtin]="fg=${ZSH_HL_MAGENTA}"
 ZSH_HIGHLIGHT_STYLES[function]="fg=${ZSH_HL_BLUE}"
 ZSH_HIGHLIGHT_STYLES[command]="fg=${ZSH_HL_GREEN}"
@@ -82,4 +83,18 @@ ZSH_HIGHLIGHT_STYLES[cursor]='standout'
 
 typeset -A ZSH_HIGHLIGHT_PATTERNS
 
-ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=red,bold')
+ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=red,bg=white,bold,standout')
+ZSH_HIGHLIGHT_PATTERNS+=('sudo rm -rf *' 'fg=red,bold,standout')
+
+# --- auto suggestion
+ZSH_AUTOSUGGEST_STRATEGY=("history completion")
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8,underline"
+
+# --- example
+# ZSH_AUTOSUGGEST_HISTORY_IGNORE="cd *"
+# ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c50,)"
+# ZSH_AUTOSUGGEST_COMPLETION_IGNORE="git *"
+
+
+

@@ -124,7 +124,7 @@ boostish_ssh_aliases_from_hosts() {
 : ${BOOSTISH_PROXY_URL:="http://127.0.0.1:2080"}
 : ${BOOSTISH_NO_PROXY:="localhost,127.0.0.1,::1"}
 
-pxon() {
+proxy_on() {
   local url="${1:-$BOOSTISH_PROXY_URL}"
   if [[ -z "$url" ]]; then
     echo "proxy-on: no proxy URL set (set BOOSTISH_PROXY_URL or pass url as arg)"
@@ -137,7 +137,7 @@ pxon() {
   geoip
 }
 
-pxoff() {
+proxy_off() {
   unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
   unset NO_PROXY no_proxy
   echo "🔴 Proxy OFF"
@@ -218,7 +218,7 @@ hexpicker() {
     done | fzf --ansi --no-sort --reverse --height=80% --prompt='Color > '
   ) || return 1
 
-  hex=${line##*\#}      # note: \# so it's literal, نه pattern عجیب
+  hex=${line##*\#}
   hex=${hex%% *}
   printf '#%s\n' "$hex"
 }
