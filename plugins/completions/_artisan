@@ -1,61 +1,63 @@
 #compdef artisan
+# ------------------------------------------------------------------------------
+# Copyright (c) 2011 Github zsh-users - https://github.com/zsh-users
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# * Neither the name of the zsh-users nor the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL ZSH-USERS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# ------------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Completion script for artisan (http://laravel.com/docs/artisan).
+#
+# ------------------------------------------------------------------------------
+# Authors
+# -------
+#
+#  * loranger (https://github.com/loranger)
+#  * Yohan Tambè (https://github.com/Cronos87)
+#
+# ------------------------------------------------------------------------------
 
-# zsh completions for artisan (Symfony/Laravel console)
 
-_sf_artisan() {
-    local lastParam flagPrefix requestComp out comp
-    local -a completions
-
-    # کلمات رو تا جای کرسر نگه دار
-    words=("${=words[1,CURRENT]}")
-    lastParam=${words[-1]}
-
-    # برای --opt=val
-    setopt local_options BASH_REMATCH
-    if [[ "${lastParam}" =~ '-.*=' ]]; then
-        flagPrefix="-P ${BASH_REMATCH}"
-    fi
-
-    requestComp="${words[1]} _complete --no-interaction -szsh -a1 -c$((CURRENT-1))"
-    i=""
-
-    for w in ${words[@]}; do
-        w=$(printf -- '%b' "$w")
-
-        # remove quotes
-        quote="${w:0:1}"
-        if [ "$quote" = \' ]; then
-            w="${w%\'}"
-            w="${w#\'}"
-        elif [ "$quote" = \" ]; then
-            w="${w%\"}"
-            w="${w#\"}"
-        fi
-
-        [ -z "$w" ] || i="${i}-i${w} "
-    done
-
-    # Ensure at least 1 input
-    if [ -z "${i}" ]; then
-        requestComp="${requestComp} -i\" \""
-    else
-        requestComp="${requestComp} ${i}"
-    fi
-
-    # اینجا هم IFS رو درست می‌کنیم
-    out=$(eval "${requestComp}" 2>/dev/null)
-
-    while IFS=$'\n' read -r comp; do
-        [ -z "$comp" ] && continue
-
-        comp=${comp//:/\\:}
-        local tab=$'\t'
-        comp=${comp//$tab/:}
-        completions+=("$comp")
-    done <<< "$out"
-
-    eval _describe "completions" completions $flagPrefix
-    return $?
+_artisan_get_command_list () {
+    IFS=" "
+    php artisan --no-ansi | \
+        sed "1,/Available commands/d" | \
+        awk '/ [a-z]+/ { print $1 }' | \
+        sed -E 's/^[ ]+//g' | \
+        sed -E 's/[:]+/\\:/g' | \
+        sed -E 's/[ ]{2,}/\:/g'
 }
 
-compdef _sf_artisan artisan
+_artisan () {
+    if [ -f artisan ]; then
+        local -a commands
+        IFS=$'\n'
+        commands=(`_artisan_get_command_list`)
+        _describe 'commands' commands
+    fi
+}
+
+compdef _artisan php artisan
+compdef _artisan artisan
