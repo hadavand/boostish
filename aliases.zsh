@@ -54,7 +54,6 @@ function zombies() {
 }
 
 alias pg='ping 8.8.8.8 -c 5'
-alias watch='watch -n 1'
 alias paths='print -l $path'
 alias fpaths='print -l $fpath'
 alias hist10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'

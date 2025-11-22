@@ -6,15 +6,15 @@ BOOSTISH_SSH_USER='vana'
 boostish_ssh_aliases_from_hosts
 
 if command -v composer >/dev/null 2>&1; then
-	if [[ -z $__composer_bin_dir ]]; then
-		__composer_bin_dir=$(composer global config bin-dir --absolute 2>/dev/null)
-		_store_cache composer __composer_bin_dir
-	fi
+    if [[ -z $__composer_bin_dir ]]; then
+        __composer_bin_dir=$(composer global config bin-dir --absolute 2>/dev/null)
+        _store_cache composer __composer_bin_dir
+    fi
 
-	# Add Composer's global binaries to PATH
-	export PATH="$PATH:$__composer_bin_dir"
-	eval "$(laravel completion zsh)"
-	unset __composer_bin_dir
+    # Add Composer's global binaries to PATH
+    export PATH="$PATH:$__composer_bin_dir"
+    eval "$(laravel completion zsh)"
+    unset __composer_bin_dir
 fi
 
 if command -v docker >/dev/null 2>&1; then
@@ -26,17 +26,17 @@ if command -v k9s >/dev/null 2>&1; then
 fi
 
 if (( $+commands[helm] )); then
-	# If the completion file does not exist, generate it and then source it
-	# Otherwise, source it and regenerate in the background
-	if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
-	  helm completion zsh | tee "$ZSH_CACHE_DIR/completions/_helm" >/dev/null
-	  source "$ZSH_CACHE_DIR/completions/_helm"
-	else
-	  source "$ZSH_CACHE_DIR/completions/_helm"
-	  helm completion zsh | tee "$ZSH_CACHE_DIR/completions/_helm" >/dev/null &|
-	fi
+    # If the completion file does not exist, generate it and then source it
+    # Otherwise, source it and regenerate in the background
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
+        helm completion zsh | tee "$ZSH_CACHE_DIR/completions/_helm" >/dev/null
+        source "$ZSH_CACHE_DIR/completions/_helm"
+    else
+        source "$ZSH_CACHE_DIR/completions/_helm"
+        helm completion zsh | tee "$ZSH_CACHE_DIR/completions/_helm" >/dev/null &|
+    fi
 fi
 
 if [[ -n "$TILIX_ID" || -n "$VTE_VERSION" ]]; then
-  [[ -r /etc/profile.d/vte.sh ]] && source /etc/profile.d/vte.sh
+    [[ -r /etc/profile.d/vte.sh ]] && source /etc/profile.d/vte.sh
 fi

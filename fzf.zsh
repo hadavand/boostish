@@ -12,7 +12,7 @@ export FZF_DEFAULT_OPTS="
     --prompt=' '
     --pointer=' '
     --marker=' '
-    --separator=''
+    --separator=' '
     --scrollbar='▌'
 
     --color=fg:#91aab0,fg+:#2ecbcb,bg:-1,bg+:#1b292f

@@ -23,25 +23,19 @@ zstyle ':completion:*:*:kill:*:processes' command 'ps -u $USER -o pid,%cpu,cputi
 # zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 zstyle ':fzf-tab:*' fzf-flags \
-  --style='full' \
   --layout='reverse' \
   --height='80%' \
-  --prompt=' ' \
+  --prompt='  ' \
   --marker=' ' \
-  --pointer='󰜴 ' \
-  --separator='' \
-  --scrollbar='▌' \
-  --color='pointer:#4fe8d7' \
-  --border='rounded' \
-  --border-label=' Completion System ' \
-  --input-label=' Query '
-
-  # --height=80% \
-  # --color='fg:#91aab0,fg+:#2ecbcb,bg:-1,bg+:#1b3117' \
-  # --color='hl:#5ea0f5,hl+:#10b9f2' \
-  # --color='info:#7a8288,spinner:#b57bea,header:#7a8288' \
-  # --color='prompt:#c68bf9,pointer:#5af2d6,marker:#2bd3be' \
-  # --color='border:#262c38,label:#bc03ff,query:#70be56'
+  --pointer='󰛂 ' \
+  --separator='─' \
+  --scrollbar='│' \
+  --info='right' \
+  --color='fg:#d0d0d0,fg+:#d0d0d0,bg:#212830,bg+:#414a59' \
+  --color='hl:#5f87af,hl+:#5fd7ff,info:#0fc38a,marker:#30f70c' \
+  --color='prompt:#0cb7e6,spinner:#af5fff,pointer:#0de36a,header:#0fc38a' \
+  --color='border:#262626,label:#aeaeae,query:#d9d9d9' \
+  --preview-window='border-rounded'
 
 zstyle ':fzf-tab:*' fzf-bindings 'space:accept' 'alt-a:toggle-all' 'ctrl-down:toggle+down' 'ctrl-up:toggle+up'
 zstyle ':fzf-tab:*' prefix ''

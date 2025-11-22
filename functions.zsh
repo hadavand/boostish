@@ -1,3 +1,5 @@
+watch() { command watch --color "$@"; }
+
 # human readable duration like "1h 3m 5s"
 displaytime() {
   local t=$1 d h m s
