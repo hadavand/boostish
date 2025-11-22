@@ -1,12 +1,7 @@
-if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
-
-  return 0
-fi
-
 # plain shell on linux virtual consoles (tty2..tty6)
 if [[ $TTY == /dev/tty[1-6] ]]; then
   PROMPT='%n@%m:%~ %# '
-  return
+  return 0
 fi
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then

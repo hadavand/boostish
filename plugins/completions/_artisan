@@ -1,0 +1,61 @@
+#compdef artisan
+
+# zsh completions for artisan (Symfony/Laravel console)
+
+_sf_artisan() {
+    local lastParam flagPrefix requestComp out comp
+    local -a completions
+
+    # کلمات رو تا جای کرسر نگه دار
+    words=("${=words[1,CURRENT]}")
+    lastParam=${words[-1]}
+
+    # برای --opt=val
+    setopt local_options BASH_REMATCH
+    if [[ "${lastParam}" =~ '-.*=' ]]; then
+        flagPrefix="-P ${BASH_REMATCH}"
+    fi
+
+    requestComp="${words[1]} _complete --no-interaction -szsh -a1 -c$((CURRENT-1))"
+    i=""
+
+    for w in ${words[@]}; do
+        w=$(printf -- '%b' "$w")
+
+        # remove quotes
+        quote="${w:0:1}"
+        if [ "$quote" = \' ]; then
+            w="${w%\'}"
+            w="${w#\'}"
+        elif [ "$quote" = \" ]; then
+            w="${w%\"}"
+            w="${w#\"}"
+        fi
+
+        [ -z "$w" ] || i="${i}-i${w} "
+    done
+
+    # Ensure at least 1 input
+    if [ -z "${i}" ]; then
+        requestComp="${requestComp} -i\" \""
+    else
+        requestComp="${requestComp} ${i}"
+    fi
+
+    # اینجا هم IFS رو درست می‌کنیم
+    out=$(eval "${requestComp}" 2>/dev/null)
+
+    while IFS=$'\n' read -r comp; do
+        [ -z "$comp" ] && continue
+
+        comp=${comp//:/\\:}
+        local tab=$'\t'
+        comp=${comp//$tab/:}
+        completions+=("$comp")
+    done <<< "$out"
+
+    eval _describe "completions" completions $flagPrefix
+    return $?
+}
+
+compdef _sf_artisan artisan

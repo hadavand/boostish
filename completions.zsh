@@ -60,7 +60,8 @@ zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl
 
 [[ -d $HOME/.zsh/completions ]] || mkdir -p "$HOME/.zsh/completions"
 
-fpath=("$HOME/.zsh/completions" $fpath)
+# fpath=("$HOME/.zsh/completions" $fpath)
+fpath=("$BOOSTISH_CONFIG_DIR/plugins/completions" $fpath)
 
 autoload -Uz compinit
 compinit -u

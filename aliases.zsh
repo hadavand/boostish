@@ -144,18 +144,20 @@ if (( ${+commands[docker-compose]} )) || command docker compose &>/dev/null; the
   unset dccmd
 fi
 
-# alias art='docker compose exec app php artisan'
+alias art='docker compose exec app php artisan'
 
 # Dockerized artisan wrapper
 BOOSTISH_LARAVEL_SERVICE=${BOOSTISH_LARAVEL_SERVICE:-app}
 
-art() {
-  if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
-    docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
-  else
-    printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
-    return 1
-  fi
-}
+# art() {
+#   if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
+#     docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
+#   else
+#     printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
+#     return 1
+#   fi
+# }
 
-artisan() { art "$@"; }
+# artisan() { art "$@"; }
+
+alias art='php artisan'
