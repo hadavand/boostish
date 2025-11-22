@@ -4,6 +4,12 @@ if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
   return 0
 fi
 
+# plain shell on linux virtual consoles (tty2..tty6)
+if [[ $TTY == /dev/tty[1-6] ]]; then
+  PROMPT='%n@%m:%~ %# '
+  return
+fi
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -26,11 +32,12 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-rust
 
 # Plugins --------------------
-zinit load MichaelAquilina/zsh-you-should-use
 zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
-zinit ice depth=1; zinit light Aloxaf/fzf-tab
-zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1; zinit light zsh-users/zsh-history-substring-search
+zinit ice depth=1; zinit light Aloxaf/fzf-tab
+# zinit ice depth=1; zinit light MichaelAquilina/zsh-you-should-use
+# zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
+zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zinit snippet OMZL::git.zsh
@@ -50,6 +57,9 @@ export BOOSTISH_FUNCTIONS_FILE="$BOOSTISH_CONFIG_DIR/functions.zsh"
 
 export BOOSTISH_SETTINGS_FILE="$BOOSTISH_CONFIG_DIR/settings.zsh"
 [[ -r $BOOSTISH_SETTINGS_FILE ]] && source "$BOOSTISH_SETTINGS_FILE"
+
+export BOOSTISH_HIGHLIGHTINGS_FILE="$BOOSTISH_CONFIG_DIR/highlightings.zsh"
+[[ -r $BOOSTISH_HIGHLIGHTINGS_FILE ]] && source "$BOOSTISH_HIGHLIGHTINGS_FILE"
 
 export BOOSTISH_KEYBINDINGS_FILE="$BOOSTISH_CONFIG_DIR/keybindings.zsh"
 [[ -r $BOOSTISH_KEYBINDINGS_FILE ]] && source "$BOOSTISH_KEYBINDINGS_FILE"
