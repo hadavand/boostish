@@ -1,6 +1,5 @@
 if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
-  PROMPT='%F{244}%* %F{81}%n%f%F{240}@%m %F{39}%~%f %# '
-  RPROMPT='%F{244}%?%f'
+
   return 0
 fi
 
@@ -38,7 +37,6 @@ zinit ice depth=1; zinit light Aloxaf/fzf-tab
 # zinit ice depth=1; zinit light MichaelAquilina/zsh-you-should-use
 # zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
-zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zinit snippet OMZL::git.zsh
 zinit snippet OMZP::git
@@ -64,8 +62,13 @@ export BOOSTISH_HIGHLIGHTINGS_FILE="$BOOSTISH_CONFIG_DIR/highlightings.zsh"
 export BOOSTISH_KEYBINDINGS_FILE="$BOOSTISH_CONFIG_DIR/keybindings.zsh"
 [[ -r $BOOSTISH_KEYBINDINGS_FILE ]] && source "$BOOSTISH_KEYBINDINGS_FILE"
 
-export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k.zsh"
-[[ -f $BOOSTISH_POWER_LEVEL_FILE ]] && source "$BOOSTISH_POWER_LEVEL_FILE"
+if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" || -n "$VSCODE_INTEGRATED_TERMINAL" || "$TERM_PROGRAM" == "vscode" ]]; then
+  PROMPT='%F{39}%~%f  '
+else
+  zinit ice depth=1; zinit light romkatv/powerlevel10k
+  export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k.zsh"
+  [[ -f $BOOSTISH_POWER_LEVEL_FILE ]] && source "$BOOSTISH_POWER_LEVEL_FILE"
+fi
 
 export BOOSTISH_POST_FILE="$BOOSTISH_CONFIG_DIR/99-post.zsh"
 [[ -r $BOOSTISH_POST_FILE ]] && source "$BOOSTISH_POST_FILE"
