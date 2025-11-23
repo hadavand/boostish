@@ -40,3 +40,9 @@ fi
 if [[ -n "$TILIX_ID" || -n "$VTE_VERSION" ]]; then
     [[ -r /etc/profile.d/vte.sh ]] && source /etc/profile.d/vte.sh
 fi
+
+# Flatpak exported commands (user + system)
+for p in "$HOME/.local/share/flatpak/exports/bin" "/var/lib/flatpak/exports/bin"; do
+  [ -d "$p" ] && PATH="$PATH:$p"
+done
+export PATH

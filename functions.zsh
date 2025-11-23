@@ -224,3 +224,85 @@ hexpicker() {
   hex=${hex%% *}
   printf '#%s\n' "$hex"
 }
+
+funcsrc() {
+  local fn=$1 src
+
+  # Require function name
+  if [[ -z $fn ]]; then
+    echo "Usage: funcsrc <function_name>" >&2
+    return 1
+  fi
+
+  # Check functions_source first
+  src=${functions_source[$fn]:-}
+  if [[ -n $src ]]; then
+    printf '%s => %s\n' "$fn" "$src"
+    return 0
+  fi
+
+  # Fallback: search in fpath files
+  echo "$fn not in \$functions_source, searching fpath..." >&2
+  grep -R -- "$fn" $^fpath(N) 2>/dev/null || {
+    echo "No matches found in fpath" >&2
+    return 1
+  }
+}
+
+# Dockerized artisan wrapper
+BOOSTISH_LARAVEL_SERVICE=${BOOSTISH_LARAVEL_SERVICE:-app}
+
+artisan() {
+  if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
+    docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
+  else
+    printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
+    return 1
+  fi
+}
+
+# Lenovo battery helpers
+bat_conserve_path() {
+  local p
+  p=(/sys/bus/platform/drivers/ideapad_acpi/*/conservation_mode(N))
+  [[ -z $p ]] && { echo "conservation_mode path not found" >&2; return 1; }
+  echo "$p"
+}
+
+bat_conserve_on() {
+  local p
+  p=$(bat_conserve_path) || return 1
+  echo 1 | sudo tee "$p"
+}
+
+bat_conserve_off() {
+  local p
+  p=$(bat_conserve_path) || return 1
+  echo 0 | sudo tee "$p"
+}
+
+bat_conserve_status() {
+  local p
+  p=$(bat_conserve_path) || return 1
+  echo -n "conservation_mode: "
+  cat "$p"
+}
+
+bat_cycle_path() {
+  local p
+  p=(/sys/class/power_supply/BAT*/cycle_count(N))
+  [[ -z $p ]] && { echo "cycle_count path not found" >&2; return 1; }
+  echo "$p"
+}
+
+bat_cycle_count() {
+  local p
+  p=$(bat_cycle_path) || return 1
+  echo -n "battery cycle count: "
+  cat "$p"
+}
+
+alias bat-save='bat_conserve_on'
+alias bat-full='bat_conserve_off'
+alias bat-stat='bat_conserve_status'
+alias bat-cc='bat_cycle_count'

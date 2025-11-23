@@ -8,6 +8,7 @@ setopt NO_NOMATCH
 setopt NUMERIC_GLOB_SORT
 setopt EXTENDED_GLOB
 setopt GLOB_DOTS
+setopt interactivecomments
 
 # Safety
 setopt RM_STAR_WAIT
@@ -48,13 +49,6 @@ WORDCHARS=${WORDCHARS/\/}
 
 export EDITOR="vim"
 
-# # Safe paste: don't auto-execute pasted commands with newline
-# autoload -Uz bracketed-paste-magic url-quote-magic
-# zle -N bracketed-paste bracketed-paste-magic
-# zle -N self-insert url-quote-magic
-
-# if ! bindkey | grep -q 'bracketed-paste'; then
-#   bindkey '^[[200~' bracketed-paste
-# fi
+typeset -U path PATH
 
 [ -f ~/.boostish/fzf.zsh ] && source ~/.boostish/fzf.zsh

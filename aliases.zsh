@@ -2,7 +2,7 @@
 
 # ----- global pipe aliases -----
 alias -g B='| bat'
-alias -g C='| clipcopy'
+alias -g C='| copyq add - && copyq select 0'
 alias -g G='| grep'
 alias -g H='| head'
 alias -g L="| less"
@@ -78,7 +78,6 @@ fi
 if (( $+commands[bat] )); then
   alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
   alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
-  alias cat='bat --paging=never'
   alias bat='bat --paging=never'
 fi
 
@@ -144,20 +143,4 @@ if (( ${+commands[docker-compose]} )) || command docker compose &>/dev/null; the
   unset dccmd
 fi
 
-alias art='docker compose exec app php artisan'
-
-# Dockerized artisan wrapper
-BOOSTISH_LARAVEL_SERVICE=${BOOSTISH_LARAVEL_SERVICE:-app}
-
-# art() {
-#   if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
-#     docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
-#   else
-#     printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
-#     return 1
-#   fi
-# }
-
-# artisan() { art "$@"; }
-
-alias art='php artisan'
+alias copyq='com.github.hluk.copyq'

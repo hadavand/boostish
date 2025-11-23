@@ -17,15 +17,13 @@ bindkey '\e[1;5C' forward-word    # Ctrl+Right
 unsetopt flowcontrol
 bindkey '^S' history-incremental-pattern-search-forward
 
-bindkey -s '^Xz' ' exec zsh^M'
+bindkey -s '^X^Z' ' exec zsh^M'
 bindkey -s '^[^L' ' /usr/bin/clear^M'
 
 bindkey '^ ' autosuggest-accept
 bindkey '^\' autosuggest-clear
 
 # Quality of Life :)
-autoload -Uz edit-command-line; zle -N edit-command-line; bindkey '^X^E' edit-command-line
-
 sudo-command-line(){ zle autosuggest-clear; [[ -z $BUFFER ]] && zle up-history; [[ $BUFFER == sudo\ * ]] && BUFFER=${BUFFER#sudo } || BUFFER="sudo $BUFFER"; CURSOR=${#BUFFER}; zle autosuggest-fetch; zle redisplay; }
 zle -N sudo-command-line
 bindkey '!!' sudo-command-line
@@ -37,7 +35,7 @@ expand-alias-clean() {
   zle redisplay
 }
 zle -N expand-alias-clean
-bindkey '@@' expand-alias-clean
+bindkey '^[@' expand-alias-clean
 
 # Up/Down: search history by current prefix
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=#00af5f,fg=white,bold'
@@ -48,18 +46,37 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey '^[OA' history-substring-search-up
 bindkey '^[OB' history-substring-search-down
+bindkey '^Z' undo
 
-# copybuffer () {
-#   if builtin which clipcopy &>/dev/null; then
-#     printf "%s" "$BUFFER" | clipcopy
-#   else
-#     zle -M "clipcopy not found. Please make sure you have Oh My Zsh installed correctly."
-#   fi
-# }
+boostish-copy-buffer () {
+  if builtin which copyq &>/dev/null; then
+    printf "%s" "$BUFFER" | copyq add - && copyq select 0
+  else
+    zle -M "copyq not found"
+  fi
+}
+zle -N boostish-copy-buffer
+bindkey '^X^Y' boostish-copy-buffer
 
-# zle -N copybuffer
+autoload -Uz bracketed-paste-magic edit-command-line
+zle -N bracketed-paste bracketed-paste-magic
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
 
-# bindkey -M emacs "^O" copybuffer
-# bindkey -M viins "^O" copybuffer
-# bindkey -M vicmd "^O" copybuffer
+boostish-paste() {
+  local text
+  text=$(copyq clipboard 2>/dev/null) || return
+  [[ -z $text ]] && return
+  text=${text%$'\n'}
+  LBUFFER+="$text"
+}
+zle -N boostish-paste
+bindkey '^X^V' boostish-paste
 
+boostish-abort-line() {
+  BUFFER=""
+  CURSOR=0
+  zle reset-prompt
+}
+zle -N boostish-abort-line
+bindkey '^G' boostish-abort-line
