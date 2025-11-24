@@ -27,7 +27,7 @@ ZSH_HIGHLIGHT_STYLES[builtin]="fg=${ZSH_HL_MAGENTA}"
 ZSH_HIGHLIGHT_STYLES[function]="fg=${ZSH_HL_BLUE}"
 ZSH_HIGHLIGHT_STYLES[command]="fg=${ZSH_HL_GREEN}"
 ZSH_HIGHLIGHT_STYLES[precommand]="fg=${ZSH_HL_GREEN},underline"
-ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#5f875f,bold'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#5f875f'
 ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=#0000af'
 ZSH_HIGHLIGHT_STYLES[autodirectory]="fg=${ZSH_HL_PATH},underline"
 ZSH_HIGHLIGHT_STYLES[path]="fg=${ZSH_HL_PATH},underline"

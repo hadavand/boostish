@@ -29,6 +29,14 @@ if command -v k9s >/dev/null 2>&1; then
     source <(k9s completion zsh)
 fi
 
+if command -v volta >/dev/null 2>&1; then
+    source <(volta completions zsh)
+fi
+
+if command -v codex >/dev/null 2>&1; then
+    source <(codex completion zsh)
+fi
+
 if (( $+commands[helm] )); then
     # If the completion file does not exist, generate it and then source it
     # Otherwise, source it and regenerate in the background
