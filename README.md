@@ -35,5 +35,7 @@ sudo wget 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20
 
 sudo fc-cache -fv
 
+volta
+
 https://upload.wikimedia.org/wikipedia/commons/1/15/Xterm_256color_chart.svg
 https://vitormv.github.io/fzf-themes/

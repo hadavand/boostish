@@ -5,6 +5,10 @@ BOOSTISH_SSH_PREFIX='atrak-'
 BOOSTISH_SSH_USER='vana'
 boostish_ssh_aliases_from_hosts
 
+if (( $+commands[bat] )); then
+    export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
+fi
+
 if command -v composer >/dev/null 2>&1; then
     if [[ -z $__composer_bin_dir ]]; then
         __composer_bin_dir=$(composer global config bin-dir --absolute 2>/dev/null)

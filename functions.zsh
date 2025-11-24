@@ -262,47 +262,54 @@ artisan() {
 }
 
 # Lenovo battery helpers
-bat_conserve_path() {
+battery_conserve_path() {
   local p
   p=(/sys/bus/platform/drivers/ideapad_acpi/*/conservation_mode(N))
   [[ -z $p ]] && { echo "conservation_mode path not found" >&2; return 1; }
   echo "$p"
 }
 
-bat_conserve_on() {
+battery_conserve_on() {
   local p
-  p=$(bat_conserve_path) || return 1
+  p=$(battery_conserve_path) || return 1
   echo 1 | sudo tee "$p"
 }
 
-bat_conserve_off() {
+battery_conserve_off() {
   local p
-  p=$(bat_conserve_path) || return 1
+  p=$(battery_conserve_path) || return 1
   echo 0 | sudo tee "$p"
 }
 
-bat_conserve_status() {
+battery_conserve_status() {
   local p
-  p=$(bat_conserve_path) || return 1
+  p=$(battery_conserve_path) || return 1
   echo -n "conservation_mode: "
   cat "$p"
 }
 
-bat_cycle_path() {
+battery_cycle_path() {
   local p
   p=(/sys/class/power_supply/BAT*/cycle_count(N))
   [[ -z $p ]] && { echo "cycle_count path not found" >&2; return 1; }
   echo "$p"
 }
 
-bat_cycle_count() {
+battery_cycle_count() {
   local p
-  p=$(bat_cycle_path) || return 1
+  p=$(battery_cycle_path) || return 1
   echo -n "battery cycle count: "
   cat "$p"
 }
 
-alias bat-save='bat_conserve_on'
-alias bat-full='bat_conserve_off'
-alias bat-stat='bat_conserve_status'
-alias bat-cc='bat_cycle_count'
+power_profile_performance() {
+  powerprofilesctl set performance
+}
+
+power_profile_balanced() {
+  powerprofilesctl set balanced
+}
+
+power_profile_save() {
+  powerprofilesctl set power-saver
+}

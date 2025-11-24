@@ -48,6 +48,8 @@ setopt PATH_DIRS
 WORDCHARS=${WORDCHARS/\/}
 
 export EDITOR="vim"
+export BAT_THEME="dark"
+export BAT_THEME_DARK="OneHalfDark"
 
 typeset -U path PATH
 

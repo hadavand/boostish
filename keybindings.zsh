@@ -1,3 +1,4 @@
+bindkey -e
 bindkey '^[[Z' backward-menu-complete
 
 # Keybindings (override plugin defaults)
@@ -35,7 +36,7 @@ expand-alias-clean() {
   zle redisplay
 }
 zle -N expand-alias-clean
-bindkey '^[@' expand-alias-clean
+bindkey '^[e' expand-alias-clean
 
 # Up/Down: search history by current prefix
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=#00af5f,fg=white,bold'
