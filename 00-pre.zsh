@@ -59,3 +59,17 @@ if [[ -d "$HOME/.volta/bin" ]]; then
   export VOLTA_HOME="$HOME/.volta"
   export PATH="$VOLTA_HOME/bin:$PATH"
 fi
+
+# goenv core
+export GOENV_ROOT="$HOME/.goenv"
+export PATH="$GOENV_ROOT/bin:$PATH"
+eval "$(goenv init -)"
+
+export GOPATH="$HOME/go"
+export GOBIN="$HOME/.local/bin"
+export PATH="$GOBIN:$PATH"
+
+# golang
+# export GOROOT=/usr/local/go
+# export GOPATH=$HOME/go
+# export PATH=$GOPATH/bin:$GOROOT/bin:$PATH

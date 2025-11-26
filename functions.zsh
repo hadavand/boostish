@@ -1,4 +1,4 @@
-watch() { command watch --color "$@"; }
+watch() { command watch -n 1watch -n 1 -d 'ip route show table main'v --color "$@"; }
 
 # human readable duration like "1h 3m 5s"
 displaytime() {
@@ -312,4 +312,9 @@ power_profile_balanced() {
 
 power_profile_save() {
   powerprofilesctl set power-saver
+}
+
+b64_token() {
+  [[ $# -ne 1 ]] && { echo "Usage: b64_token user:pass" >&2; return 1; }
+  printf '%s' "$1" | base64
 }

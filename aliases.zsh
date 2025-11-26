@@ -133,7 +133,7 @@ if (( ${+commands[docker-compose]} )) || command docker compose &>/dev/null; the
 
   alias dco="$dccmd"
   alias dcb="$dccmd build"
-  alias dcw="$dccmd up -d --force-recreate --remove-orpahns --wait"
+  alias dcw="$dccmd up -d --force-recreate --remove-orphans --wait"
   alias dce="$dccmd exec"
   alias dcr="$dccmd run"
   alias dcdn="$dccmd down"

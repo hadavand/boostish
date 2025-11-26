@@ -89,7 +89,7 @@ ZSH_HIGHLIGHT_PATTERNS+=('sudo rm -rf *' 'fg=red,bold,standout')
 # --- auto suggestion
 ZSH_AUTOSUGGEST_STRATEGY=("history completion")
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8,underline"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=240"
 
 # --- example
 # ZSH_AUTOSUGGEST_HISTORY_IGNORE="cd *"
