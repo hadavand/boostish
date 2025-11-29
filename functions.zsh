@@ -269,7 +269,7 @@ battery_conserve_path() {
   echo "$p"
 }
 
-battery_conserve_on() {
+battery_conserve_on() {t
   local p
   p=$(battery_conserve_path) || return 1
   echo 1 | sudo tee "$p"

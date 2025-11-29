@@ -1,3 +1,19 @@
+if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
+  PROMPT='%F{244}%* %F{81}%n%f%F{240}@%m %F{39}%~%f %# '
+  RPROMPT='%F{244}%?%f'
+  return 0
+fi
+
+# plain shell on linux virtual consoles (tty2..tty6)
+if [[ $TTY == /dev/tty[1-6] ]]; then
+  PROMPT='%n@%m:%~ %# '
+  return
+fi
+
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"

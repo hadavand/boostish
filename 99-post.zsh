@@ -58,3 +58,14 @@ for p in "$HOME/.local/share/flatpak/exports/bin" "/var/lib/flatpak/exports/bin"
   [ -d "$p" ] && PATH="$PATH:$p"
 done
 export PATH
+
+#GVM go version manager
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+
+#GOLANG binaries and env
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+export GOBIN=$(go env GOPATH)/bin
+export GOPROXY=https://calix.vanaboom.ir/go,direct
+export GOSUMDB="sum.golang.org https://calix.vanaboom.ir/go-sum"
