@@ -65,3 +65,7 @@ fpath=("$BOOSTISH_CONFIG_DIR/plugins/completions" $fpath)
 
 autoload -Uz compinit
 compinit -u
+
+# Zinit completion (after compinit)
+autoload -Uz _zinit
+compdef _zinit zinit
