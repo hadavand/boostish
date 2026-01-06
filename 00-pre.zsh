@@ -55,7 +55,8 @@ export BAT_THEME_DARK="OneHalfDark"
 
 typeset -U path PATH
 
-[ -f ~/.boostish/fzf.zsh ] && source ~/.boostish/fzf.zsh
+[ -f "${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}/10-fzf.zsh" ] && \
+  source "${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}/10-fzf.zsh"
 
 if [[ -d "$HOME/.volta/bin" ]]; then
   export VOLTA_HOME="$HOME/.volta"

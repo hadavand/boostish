@@ -40,33 +40,33 @@ zinit snippet OMZP::bgnotify
 zinit snippet OMZP::encode64
 zinit snippet OMZP::gh
 
-export BOOSTISH_COMPLETIONS_FILE="$BOOSTISH_CONFIG_DIR/completions.zsh"
+export BOOSTISH_COMPLETIONS_FILE="$BOOSTISH_CONFIG_DIR/20-completions.zsh"
 [[ -r $BOOSTISH_COMPLETIONS_FILE ]] && source "$BOOSTISH_COMPLETIONS_FILE"
 
 zinit ice lucid; zinit snippet ~/.boostish/plugins/minio/minio.plugin.zsh
 
-export BOOSTISH_ALIASES_FILE="$BOOSTISH_CONFIG_DIR/aliases.zsh"
+export BOOSTISH_ALIASES_FILE="$BOOSTISH_CONFIG_DIR/30-aliases.zsh"
 [[ -r $BOOSTISH_ALIASES_FILE ]] && source "$BOOSTISH_ALIASES_FILE"
 
-export BOOSTISH_FUNCTIONS_FILE="$BOOSTISH_CONFIG_DIR/functions.zsh"
+export BOOSTISH_FUNCTIONS_FILE="$BOOSTISH_CONFIG_DIR/40-functions.zsh"
 [[ -r $BOOSTISH_FUNCTIONS_FILE ]] && source "$BOOSTISH_FUNCTIONS_FILE"
 
 export BOOSTISH_SETTINGS_FILE="$BOOSTISH_CONFIG_DIR/settings.zsh"
 [[ -r $BOOSTISH_SETTINGS_FILE ]] && source "$BOOSTISH_SETTINGS_FILE"
 
-export BOOSTISH_HIGHLIGHTINGS_FILE="$BOOSTISH_CONFIG_DIR/highlightings.zsh"
+export BOOSTISH_HIGHLIGHTINGS_FILE="$BOOSTISH_CONFIG_DIR/50-highlightings.zsh"
 [[ -r $BOOSTISH_HIGHLIGHTINGS_FILE ]] && source "$BOOSTISH_HIGHLIGHTINGS_FILE"
 
-export BOOSTISH_KEYBINDINGS_FILE="$BOOSTISH_CONFIG_DIR/keybindings.zsh"
+export BOOSTISH_KEYBINDINGS_FILE="$BOOSTISH_CONFIG_DIR/60-keybindings.zsh"
 [[ -r $BOOSTISH_KEYBINDINGS_FILE ]] && source "$BOOSTISH_KEYBINDINGS_FILE"
 
 # Powerlevel10k (with different configs per terminal)
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" || -n "$VSCODE_INTEGRATED_TERMINAL" || "$TERM_PROGRAM" == "vscode" ]]; then
-  export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k-pure.zsh"
+  export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/91-p10k-pure.zsh"
 else
-  export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k.zsh"
+  export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/90-p10k.zsh"
 fi
 
 [[ -r $BOOSTISH_POWER_LEVEL_FILE ]] && source "$BOOSTISH_POWER_LEVEL_FILE"
