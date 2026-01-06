@@ -1,5 +1,3 @@
-watch() { command watch -n 1watch -n 1 -d 'ip route show table main'v --color "$@"; }
-
 # human readable duration like "1h 3m 5s"
 displaytime() {
   local t=$1 d h m s
@@ -249,18 +247,6 @@ funcsrc() {
   }
 }
 
-# Dockerized artisan wrapper
-BOOSTISH_LARAVEL_SERVICE=${BOOSTISH_LARAVEL_SERVICE:-app}
-
-artisan() {
-  if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
-    docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
-  else
-    printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
-    return 1
-  fi
-}
-
 # Lenovo battery helpers
 battery_conserve_path() {
   local p
@@ -269,7 +255,7 @@ battery_conserve_path() {
   echo "$p"
 }
 
-battery_conserve_on() {t
+battery_conserve_on() {
   local p
   p=$(battery_conserve_path) || return 1
   echo 1 | sudo tee "$p"

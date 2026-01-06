@@ -30,9 +30,9 @@ zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
 zinit ice depth=1; zinit light zsh-users/zsh-history-substring-search
 zinit ice depth=1; zinit light Aloxaf/fzf-tab
 # zinit ice depth=1; zinit light MichaelAquilina/zsh-you-should-use
+# zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
 zinit ice depth=1; zinit light zsh-users/zsh-completions
-# zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
 
 zinit snippet OMZL::git.zsh
 zinit snippet OMZP::git
@@ -42,6 +42,8 @@ zinit snippet OMZP::gh
 
 export BOOSTISH_COMPLETIONS_FILE="$BOOSTISH_CONFIG_DIR/completions.zsh"
 [[ -r $BOOSTISH_COMPLETIONS_FILE ]] && source "$BOOSTISH_COMPLETIONS_FILE"
+
+zinit ice lucid; zinit snippet ~/.boostish/plugins/minio/minio.plugin.zsh
 
 export BOOSTISH_ALIASES_FILE="$BOOSTISH_CONFIG_DIR/aliases.zsh"
 [[ -r $BOOSTISH_ALIASES_FILE ]] && source "$BOOSTISH_ALIASES_FILE"
@@ -58,13 +60,18 @@ export BOOSTISH_HIGHLIGHTINGS_FILE="$BOOSTISH_CONFIG_DIR/highlightings.zsh"
 export BOOSTISH_KEYBINDINGS_FILE="$BOOSTISH_CONFIG_DIR/keybindings.zsh"
 [[ -r $BOOSTISH_KEYBINDINGS_FILE ]] && source "$BOOSTISH_KEYBINDINGS_FILE"
 
+# Powerlevel10k (with different configs per terminal)
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+
 if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" || -n "$VSCODE_INTEGRATED_TERMINAL" || "$TERM_PROGRAM" == "vscode" ]]; then
-  PROMPT='%F{39}%~%f  '
+  export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k-pure.zsh"
 else
-  zinit ice depth=1; zinit light romkatv/powerlevel10k
   export BOOSTISH_POWER_LEVEL_FILE="$BOOSTISH_CONFIG_DIR/p10k.zsh"
-  [[ -f $BOOSTISH_POWER_LEVEL_FILE ]] && source "$BOOSTISH_POWER_LEVEL_FILE"
 fi
+
+[[ -r $BOOSTISH_POWER_LEVEL_FILE ]] && source "$BOOSTISH_POWER_LEVEL_FILE"
 
 export BOOSTISH_POST_FILE="$BOOSTISH_CONFIG_DIR/99-post.zsh"
 [[ -r $BOOSTISH_POST_FILE ]] && source "$BOOSTISH_POST_FILE"
+
+alias mcli='docker compose exec minio-client mc'

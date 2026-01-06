@@ -58,9 +58,9 @@ zstyle ':fzf-tab:complete:ls*:*' fzf-preview 'lsd --color=always --group-dirs=fi
 zstyle ':fzf-tab:complete:kill:*' fzf-preview 'ps -p $word -o pid,user,cmd --no-headers'
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 
-[[ -d $HOME/.zsh/completions ]] || mkdir -p "$HOME/.zsh/completions"
+# [[ -d $HOME/.zsh/completions ]] || mkdir -p "$HOME/.zsh/completions"
 
-# fpath=("$HOME/.zsh/completions" $fpath)
+# # fpath=("$HOME/.zsh/completions" $fpath)
 fpath=("$BOOSTISH_CONFIG_DIR/plugins/completions" $fpath)
 
 autoload -Uz compinit

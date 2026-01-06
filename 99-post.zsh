@@ -9,18 +9,6 @@ if (( $+commands[bat] )); then
     export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
 fi
 
-if command -v composer >/dev/null 2>&1; then
-    if [[ -z $__composer_bin_dir ]]; then
-        __composer_bin_dir=$(composer global config bin-dir --absolute 2>/dev/null)
-        _store_cache composer __composer_bin_dir
-    fi
-
-    # Add Composer's global binaries to PATH
-    export PATH="$PATH:$__composer_bin_dir"
-    eval "$(laravel completion zsh)"
-    unset __composer_bin_dir
-fi
-
 if command -v docker >/dev/null 2>&1; then
     source <(docker completion zsh)
 fi
@@ -58,14 +46,3 @@ for p in "$HOME/.local/share/flatpak/exports/bin" "/var/lib/flatpak/exports/bin"
   [ -d "$p" ] && PATH="$PATH:$p"
 done
 export PATH
-
-#GVM go version manager
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
-
-#GOLANG binaries and env
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-export GOBIN=$(go env GOPATH)/bin
-export GOPROXY=https://calix.vanaboom.ir/go,direct
-export GOSUMDB="sum.golang.org https://calix.vanaboom.ir/go-sum"

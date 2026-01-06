@@ -56,6 +56,7 @@ function zombies() {
 alias pg='ping 8.8.8.8 -c 5'
 alias paths='print -l $path'
 alias fpaths='print -l $fpath'
+alias history='fc -il 1'
 alias hist10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
 
 alias python="python3"
@@ -86,61 +87,51 @@ if (( $+commands[subl] )); then
 fi
 
 # Docker aliases
-if (( $+commands[docker] )); then
-  # build / images
+if command -v docker &>/dev/null; then
   alias dbl='docker buildx build'
-  
   alias dii='docker image inspect'
   alias dil='docker image ls'
-  
   alias dcls='docker container ls'
-  
   alias dcin='docker container inspect'
   alias dlo='docker container logs'
-
-  # run / exec
   alias dr='docker container run'
   alias drit='docker container run -it'
   alias dxc='docker container exec'
   alias dxcit='docker container exec -it'
-
-  # ps / pull / ports
   alias dps='docker ps'
-  
-  # stop *all* running containers ⚠
   alias dsta='docker stop $(docker ps -q)'
-
-  # network
   alias dni='docker network inspect'
   alias dnls='docker network ls'
-
-  # volumes
   alias dvi='docker volume inspect'
   alias dvls='docker volume ls'
   alias dvprune='docker volume prune'
-
-  # misc
   alias dtop='docker top'
+
+  alias dco="docker compose"
+  alias dcb="docker compose build"
+  alias dcw="docker compose up -d --force-recreate --remove-orphans --wait"
+  alias dce="docker compose exec"
+  alias dcr="docker compose run"
+  alias dcdn="docker compose down"
+  alias dcl="docker compose logs"
+  alias dclf="docker compose logs -f"
+  alias dck="docker compose kill"
+
+  alias artisan='docker compose exec app php artisan'
+  alias composer='docker compose exec app composer'
+  alias npm='docker compose exec app npm'
 fi
 
-# Docker Compose aliases
-if (( ${+commands[docker-compose]} )) || command docker compose &>/dev/null; then
-  if [[ -x "${commands[docker-compose]:A}" ]]; then
-    dccmd='docker-compose'
-  else
-    dccmd='docker compose'
-  fi
+# Dockerized artisan wrapper
+# BOOSTISH_LARAVEL_SERVICE=${BOOSTISH_LARAVEL_SERVICE:-app}
 
-  alias dco="$dccmd"
-  alias dcb="$dccmd build"
-  alias dcw="$dccmd up -d --force-recreate --remove-orphans --wait"
-  alias dce="$dccmd exec"
-  alias dcr="$dccmd run"
-  alias dcdn="$dccmd down"
-  alias dcl="$dccmd logs"
-  alias dclf="$dccmd logs -f"
-  alias dck="$dccmd kill"
-  unset dccmd
-fi
+# artisan() {
+#   if [[ -f docker-compose.yml || -f docker-compose.yaml || -f compose.yml || -f compose.yaml ]]; then
+#     docker compose exec "$BOOSTISH_LARAVEL_SERVICE" php artisan "$@"
+#   else
+#     printf 'artisan: no docker compose file in %s\n' "$PWD" >&2
+#     return 1
+#   fi
+# }
 
 alias copyq='com.github.hluk.copyq'
