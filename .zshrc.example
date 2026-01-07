@@ -39,7 +39,9 @@ boostish_source 20-completions.zsh
 
 # fzf (manual preferred; fallback to zinit)
 if [[ ! -d "$HOME/.fzf" ]]; then
-  zinit ice depth=1
+  zinit ice depth=1 \
+    atclone'./install --bin --no-update-rc --no-key-bindings --no-completion' \
+    atpull'%atclone'
   zinit light junegunn/fzf
 fi
 
@@ -51,6 +53,9 @@ elif [[ -d "${ZINIT_HOME%/*}/plugins/junegunn---fzf" ]]; then
 fi
 
 if [[ -n "$boostish_fzf_dir" ]]; then
+  if [[ ! -x "$boostish_fzf_dir/bin/fzf" && -x "$boostish_fzf_dir/install" ]]; then
+    "$boostish_fzf_dir/install" --bin --no-update-rc --no-key-bindings --no-completion
+  fi
   path=("$boostish_fzf_dir/bin" $path)
   [[ -r "$boostish_fzf_dir/shell/completion.zsh" ]] && source "$boostish_fzf_dir/shell/completion.zsh"
   [[ -r "$boostish_fzf_dir/shell/key-bindings.zsh" ]] && source "$boostish_fzf_dir/shell/key-bindings.zsh"
@@ -76,8 +81,10 @@ zinit light romkatv/powerlevel10k
 if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" || -n "$VSCODE_INTEGRATED_TERMINAL" || "$TERM_PROGRAM" == "vscode" ]]; then
 	boostish_p10k_file="91-p10k-pure.zsh"
 else
-	boostish_p10k_file="90-p10k.zsh"
+	boostish_p10k_file="91-p10k-boosthish.zsh"
 fi
 
-boostish_source "$boostish_p10k_file"
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 boostish_source 99-post.zsh
