@@ -52,6 +52,7 @@ setopt NO_HUP                    # شل روی exit به jobها HUP نفرست�
 setopt MULTIOS
 setopt PIPE_FAIL
 
+typeset -gU path PATH
 setopt PATH_DIRS
 
 WORDCHARS=${WORDCHARS/\/}
@@ -62,7 +63,7 @@ export LESS='-R -F -i -M -S -w --mouse --wheel-lines=3'
 export BAT_THEME="dark"
 export BAT_THEME_DARK="OneHalfDark"
 
-typeset -U path PATH
+
 
 [ -f "${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}/10-fzf.zsh" ] && \
   source "${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}/10-fzf.zsh"
