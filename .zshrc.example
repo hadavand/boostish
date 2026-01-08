@@ -39,7 +39,7 @@ boostish_source 20-completions.zsh
 
 # fzf (manual preferred; fallback to zinit)
 if [[ ! -d "$HOME/.fzf" ]]; then
-  zinit ice depth=1 \
+  zinit ice depth=1 nocompile \
     atclone'./install --bin --no-update-rc --no-key-bindings --no-completion' \
     atpull'%atclone'
   zinit light junegunn/fzf
