@@ -14,7 +14,6 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 zstyle ':completion:*' accept-exact-dirs true
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':completion:*:git-checkout:*' sort false
 
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,args -w -w"
@@ -44,6 +43,7 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:*' show-group full
 # zstyle ':fzf-tab:*' single-group prefix
 zstyle ':fzf-tab:*' print-query alt-enter
+zstyle ':fzf-tab:complete:sudo:*' disabled-on files
 # fzf-min-height 0
 FZF_TAB_GROUP_COLORS=(
     $'\033[94m' $'\033[32m' $'\033[33m' $'\033[35m' $'\033[31m' $'\033[38;5;27m' $'\033[36m' \
@@ -57,8 +57,6 @@ zstyle ':fzf-tab:complete:cd:*'  fzf-preview 'lsd --color=always --group-dirs=fi
 zstyle ':fzf-tab:complete:ls*:*' fzf-preview 'lsd --color=always --group-dirs=first --icon=always $realpath'
 zstyle ':fzf-tab:complete:kill:*' fzf-preview 'ps -p $word -o pid,user,cmd --no-headers'
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
-
-# [[ -d $HOME/.zsh/completions ]] || mkdir -p "$HOME/.zsh/completions"
 
 # # fpath=("$HOME/.zsh/completions" $fpath)
 fpath=("$BOOSTISH_CONFIG_DIR/plugins/completions" $fpath)

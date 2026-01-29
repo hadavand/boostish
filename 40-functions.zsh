@@ -121,7 +121,7 @@ boostish_ssh_aliases_from_hosts() {
 }
 
 # Default proxy config (override in .zshrc if needed)
-: ${BOOSTISH_PROXY_URL:="http://127.0.0.1:2080"}
+: ${BOOSTISH_PROXY_URL:="http://127.0.0.1:10808"}
 : ${BOOSTISH_NO_PROXY:="localhost,127.0.0.1,::1"}
 
 proxy_on() {
