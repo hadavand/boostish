@@ -1,0 +1,47 @@
+#compdef openvpn
+
+_openvpn() {
+  local -a opts configs vals
+  local -A values
+  local cur prev
+
+  cur=${words[-1]}
+  prev=${words[-2]}
+
+  (( $+commands[openvpn] )) || return 1
+
+  opts=(${(f)"$(openvpn --help 2>/dev/null | grep -Eo -- '--[a-zA-Z0-9_-]+' | sort -u)"})
+
+  configs=(${(f)"$(ls -1 \
+    /etc/openvpn/*.conf(N) \
+    /etc/openvpn/client/*.conf(N) \
+    /etc/openvpn/server/*.conf(N) \
+    ~/.openvpn/*.ovpn(N) \
+    ~/*.ovpn(N) \
+    2>/dev/null)"})
+  configs=(${configs:t})
+
+  values=(
+    --verb          '0 1 2 3 4 5 6 7 8 9 10 11'
+    --proto         'udp tcp'
+    --dev-type      'tun tap'
+    --comp-lzo      'yes no adaptive'
+    --cipher        'AES-128-CBC AES-256-CBC CHACHA20-POLY1305'
+    --auth          'SHA1 SHA256 SHA512'
+    --key-direction '0 1'
+  )
+
+  case "$prev" in
+    --config)
+      _describe 'config file' configs
+      return
+      ;;
+    --verb|--proto|--dev-type|--comp-lzo|--cipher|--auth|--key-direction)
+      vals=(${=values[$prev]})
+      _describe 'valid value' vals
+      return
+      ;;
+  esac
+
+  _describe 'option' opts
+}

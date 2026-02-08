@@ -1,0 +1,27 @@
+#compdef p10k
+
+_p10k() {
+  local -a _p10k_subcmds
+
+  _p10k_subcmds=(
+    'configure:run interactive configuration wizard'
+    'reload:reload configuration'
+    'segment:print a user-defined prompt segment'
+    'display:show, hide or toggle prompt parts'
+    'help:print help message'
+  )
+
+  # p10k <TAB>  → لیست subcommandها
+  if (( CURRENT == 2 )); then
+    _describe -t commands 'p10k command' _p10k_subcmds
+    return
+  fi
+
+  # p10k help <TAB>  → لیست subcommandها
+  if [[ ${words[2]} == help && CURRENT == 3 ]]; then
+    _describe -t commands 'p10k command' _p10k_subcmds
+    return
+  fi
+
+  return 1
+}

@@ -1,0 +1,25 @@
+#compdef hello_boostish
+
+_hello_boostish() {
+  _arguments \
+    '-h[use loudly or quietly options]' \
+    '--help[use loudly or quietly options]' \
+    '1:mode:(quietly loudly)' \
+    '-t+[test description]:mode:(arg1 arg2)' \
+    '2:my message:(foo bar)'
+
+  case $words[2] in
+    loudly) _hello_boostish_loudly ;;
+    quietly) _hello_boostish_quietly ;;
+  esac
+}
+
+_hello_boostish_quietly() {
+  _arguments \
+    '--silent[Dont output anything]'
+}
+
+_hello_boostish_loudly() {
+  _arguments \
+    '--repeat=[Repeat the <message> any number of times]'
+}

@@ -1,0 +1,47 @@
+#compdef mc
+
+local curcontext="$curcontext" state line
+typeset -A opt_args
+
+local -a subcmds
+subcmds=(
+  'alias:manage host aliases'
+  'admin:manage MinIO servers'
+  'cat:show object contents'
+  'cp:copy files and objects'
+  'diff:diff objects'
+  'event:manage event notifications'
+  'find:search for objects'
+  'head:show first lines of object'
+  'ilm:manage lifecycle/ILM'
+  'ls:list buckets and objects'
+  'mb:make bucket'
+  'mirror:mirror directories'
+  'mv:move objects'
+  'pipe:stream stdin/stdout'
+  'policy:manage bucket policies'
+  'rb:remove bucket'
+  'rm:remove objects'
+  'share:generate shareable URLs'
+  'sql:run SQL queries'
+  'stat:show object metadata'
+  'tree:tree listing'
+  'watch:watch events'
+  'config:configure mc client'
+  'session:manage resumable sessions'
+  'update:update mc'
+  'version:show version info'
+)
+
+_arguments -C \
+  '1:command:->cmd' \
+  '*::arg:->rest'
+
+case $state in
+  cmd)
+    _describe -t commands 'mc command' subcmds
+    ;;
+  rest)
+    _files
+    ;;
+esac

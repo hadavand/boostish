@@ -1,0 +1,109 @@
+#compdef proxy
+
+_proxy__cfg() {
+  local f="${XDG_CONFIG_HOME:-$HOME/.config}/boostish/proxy/$1"
+  [[ -r "$f" ]] && print -r -- "$( < "$f" )"
+}
+
+_proxy() {
+  local cur=${words[CURRENT]}
+  local -a cmds targets keys vals descs
+
+  cmds=(
+    'on:enable proxy (env + apply + myip)'
+    'off:disable proxy (env + clear)'
+    'status:show proxy status'
+    'env:show proxy env vars'
+    'show:show stored config'
+    'set:set config value'
+    'apply:apply proxy to tools'
+    'clear:clear proxy from tools'
+  )
+
+  if (( CURRENT == 2 )); then
+    _describe -t commands 'proxy command' cmds
+    return
+  fi
+
+  case ${words[2]} in
+    apply|clear)
+      if (( CURRENT == 3 )); then
+        targets=(
+          'all:all tools'
+          'git:git (global)'
+          'npm:npm/yarn/pnpm'
+          'apt:apt (http only)'
+        )
+        _describe -t targets 'target' targets
+      fi
+      return
+      ;;
+        set)
+          if (( CURRENT == 3 )); then
+            keys=(
+              'http:http proxy url or host:port'
+              'socks:socks proxy url or host:port'
+              'port:sets both http+socks (port or host:port)'
+              'no_proxy:comma-separated list'
+              'apt_no_proxy:comma-separated host list (apt DIRECT)'
+              'git:git proxy type'
+            )
+            _describe -t keys 'key' keys
+            return
+          fi
+
+      case ${words[3]} in
+        git)
+          _describe -t values 'git proxy type' '(http socks)'
+          return
+          ;;
+        http)
+          vals=()
+          descs=()
+          local cfg_http
+          cfg_http="$(_proxy__cfg http)"
+          [[ -n "$cfg_http" ]] && vals+=("$cfg_http") && descs+=("config")
+          vals+=("http://127.0.0.1:2080" "http://127.0.0.1:8080")
+          descs+=("default mixed port" "common http port")
+          compadd -d descs -- $vals
+          return
+          ;;
+        socks|socks5|socks5h)
+          vals=()
+          descs=()
+          local cfg_socks
+          cfg_socks="$(_proxy__cfg socks)"
+          [[ -n "$cfg_socks" ]] && vals+=("$cfg_socks") && descs+=("config")
+          vals+=("socks5h://127.0.0.1:2080" "socks5h://127.0.0.1:1080")
+          descs+=("default mixed port" "common socks port")
+          compadd -d descs -- $vals
+          return
+          ;;
+        port|mixed)
+          vals=("2080" "127.0.0.1:2080")
+          descs=("default mixed port" "default host:port")
+          compadd -d descs -- $vals
+          return
+          ;;
+        no_proxy|noproxy)
+          vals=()
+          descs=()
+          local cfg_np
+          cfg_np="$(_proxy__cfg no_proxy)"
+          [[ -n "$cfg_np" ]] && vals+=("$cfg_np") && descs+=("config")
+          compadd -d descs -- $vals
+          return
+          ;;
+        apt_no_proxy)
+          vals=()
+          descs=()
+          local cfg_anp
+          cfg_anp="$(_proxy__cfg apt_no_proxy)"
+          [[ -n "$cfg_anp" ]] && vals+=("$cfg_anp") && descs+=("config")
+          compadd -d descs -- $vals
+          return
+          ;;
+      esac
+      ;;
+  esac
+}
