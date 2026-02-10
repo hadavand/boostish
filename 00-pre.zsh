@@ -66,7 +66,13 @@ typeset -gU path PATH
 
 WORDCHARS=${WORDCHARS/\/}
 
-export EDITOR="vim"
+if (( $+commands[subl] )); then
+  export EDITOR='subl -w'
+else
+  export EDITOR='vim'
+fi
+export VISUAL="$EDITOR"
+export SUDO_EDITOR="$EDITOR"
 export PAGER='less -R --mouse --wheel-lines=3'
 export LESS='-R -F -i -M -S -w --mouse --wheel-lines=3'
 export BAT_THEME="dark"
