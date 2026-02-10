@@ -63,7 +63,7 @@ _proxy() {
           local cfg_http
           cfg_http="$(_proxy__cfg http)"
           [[ -n "$cfg_http" ]] && vals+=("$cfg_http") && descs+=("config")
-          vals+=("http://127.0.0.1:2080" "http://127.0.0.1:8080")
+          vals+=("http://127.0.0.1:10808" "http://127.0.0.1:8080")
           descs+=("default mixed port" "common http port")
           compadd -d descs -- $vals
           return
@@ -74,13 +74,13 @@ _proxy() {
           local cfg_socks
           cfg_socks="$(_proxy__cfg socks)"
           [[ -n "$cfg_socks" ]] && vals+=("$cfg_socks") && descs+=("config")
-          vals+=("socks5h://127.0.0.1:2080" "socks5h://127.0.0.1:1080")
+          vals+=("socks5h://127.0.0.1:10808" "socks5h://127.0.0.1:1080")
           descs+=("default mixed port" "common socks port")
           compadd -d descs -- $vals
           return
           ;;
         port|mixed)
-          vals=("2080" "127.0.0.1:2080")
+          vals=("10808" "127.0.0.1:10808")
           descs=("default mixed port" "default host:port")
           compadd -d descs -- $vals
           return

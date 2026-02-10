@@ -52,8 +52,8 @@ typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
 	time
 	newline
 	ip
-	vpn_ip
-	# public_ip
+	# vpn_ip
+	public_ip
 	proxy
 	# wifi
 	kubecontext

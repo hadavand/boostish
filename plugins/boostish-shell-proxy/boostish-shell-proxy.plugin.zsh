@@ -1,8 +1,8 @@
 # Boostish Shell Proxy — minimal
 
 : ${BOOSTISH_PROXY_DIR:=${XDG_CONFIG_HOME:-$HOME/.config}/boostish/proxy}
-: ${BOOSTISH_PROXY_HTTP:=http://127.0.0.1:2080}
-: ${BOOSTISH_PROXY_SOCKS:=socks5h://127.0.0.1:2080}
+: ${BOOSTISH_PROXY_HTTP:=http://127.0.0.1:10808}
+: ${BOOSTISH_PROXY_SOCKS:=socks5h://127.0.0.1:10808}
 : ${BOOSTISH_PROXY_NO_PROXY:="localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,*.local"}
 : ${BOOSTISH_PROXY_GIT_TYPE:=socks}
 : ${BOOSTISH_PROXY_APT_NO_PROXY:="calix.vanaboom.ir"}
