@@ -19,14 +19,6 @@ zinit light-mode for \
 
 # Plugins --------------------
 zinit ice depth=1
-zinit light zsh-users/zsh-autosuggestions
-zinit ice depth=1
-zinit light zsh-users/zsh-history-substring-search
-zinit ice depth=1
-zinit light Aloxaf/fzf-tab
-zinit ice depth=1
-zinit light zsh-users/zsh-syntax-highlighting
-zinit ice depth=1
 zinit light zsh-users/zsh-completions
 
 zinit snippet OMZL::git.zsh
@@ -36,6 +28,16 @@ zinit snippet OMZP::encode64
 zinit snippet OMZP::gh
 
 boostish_source 20-completions.zsh
+
+# fzf-tab needs to be loaded after compinit and before plugins that wrap widgets.
+zinit ice depth=1
+zinit light Aloxaf/fzf-tab
+zinit ice depth=1
+zinit light zsh-users/zsh-autosuggestions
+zinit ice depth=1
+zinit light zsh-users/zsh-history-substring-search
+zinit ice depth=1
+zinit light zsh-users/zsh-syntax-highlighting
 
 # fzf (manual preferred; fallback to zinit)
 if [[ ! -d "$HOME/.fzf" ]]; then
@@ -57,8 +59,14 @@ if [[ -n "$boostish_fzf_dir" ]]; then
     "$boostish_fzf_dir/install" --bin --no-update-rc --no-key-bindings --no-completion
   fi
   path=("$boostish_fzf_dir/bin" $path)
-  [[ -r "$boostish_fzf_dir/shell/completion.zsh" ]] && source "$boostish_fzf_dir/shell/completion.zsh"
-  [[ -r "$boostish_fzf_dir/shell/key-bindings.zsh" ]] && source "$boostish_fzf_dir/shell/key-bindings.zsh"
+
+  # Prefer user's fzf bootstrap file; otherwise load completion/key-bindings directly.
+  if [[ -r "$HOME/.fzf.zsh" ]]; then
+    source "$HOME/.fzf.zsh"
+  else
+    [[ -r "$boostish_fzf_dir/shell/completion.zsh" ]] && source "$boostish_fzf_dir/shell/completion.zsh"
+    [[ -r "$boostish_fzf_dir/shell/key-bindings.zsh" ]] && source "$boostish_fzf_dir/shell/key-bindings.zsh"
+  fi
 fi
 
 for boostish_plugin in "$BOOSTISH_CONFIG_DIR"/plugins/*/*.plugin.zsh(N); do

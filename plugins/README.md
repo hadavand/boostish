@@ -6,10 +6,16 @@ Conventions:
 - Optional: `README.md`, `assets/`, `completions/`, `bin/`
 - Prefer a unique prefix for functions/vars to avoid collisions.
 
-Load from `.zshrc`:
+Load behavior:
 ```
-zinit snippet "$BOOSTISH_CONFIG_DIR/plugins/<name>/<name>.plugin.zsh"
+for boostish_plugin in "$BOOSTISH_CONFIG_DIR"/plugins/*/*.plugin.zsh(N); do
+  source "$boostish_plugin"
+done
 ```
+
+Completion behavior:
+- `plugins/<name>/completions/` is auto-added to `fpath` before `compinit`.
+- Put completion files there using zsh completion naming (`_<command>`).
 
 Minimal template:
 ```

@@ -60,7 +60,3 @@ export FZF_ALT_C_OPTS="
   --prompt=' '
   --preview='tree -C {} 2>/dev/null | head -n 200'
 "
-
-if [[ -f ~/.fzf.zsh ]]; then
-  source ~/.fzf.zsh
-fi

@@ -49,7 +49,6 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:*' show-group full
 # zstyle ':fzf-tab:*' single-group prefix
 zstyle ':fzf-tab:*' print-query alt-enter
-zstyle ':fzf-tab:complete:sudo:*' disabled-on files
 # fzf-min-height 0
 FZF_TAB_GROUP_COLORS=(
   $'\033[94m'
@@ -75,15 +74,69 @@ zstyle ':fzf-tab:*' group-colors $FZF_TAB_GROUP_COLORS
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd --color=always --group-dirs=first --icon=always $realpath'
 zstyle ':fzf-tab:complete:ls*:*' fzf-preview 'lsd --color=always --group-dirs=first --icon=always $realpath'
 zstyle ':fzf-tab:complete:kill:*' fzf-preview 'ps -p $word -o pid,user,cmd --no-headers'
-zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+zstyle ':fzf-tab:complete:sudo:*' fzf-preview '(( ${words[(I)systemctl]} )) && SYSTEMD_COLORS=1 SYSTEMD_PAGER=cat systemctl --no-pager --full --plain status -- ${(Q)word} 2>&1 | sed -n "1,200p"'
+zstyle ':fzf-tab:complete:systemctl:*' fzf-preview 'SYSTEMD_COLORS=1 SYSTEMD_PAGER=cat systemctl --no-pager --full --plain status -- ${(Q)word} 2>&1 | sed -n "1,200p"'
+zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 SYSTEMD_PAGER=cat systemctl --no-pager --full --plain status -- ${(Q)word} 2>&1 | sed -n "1,200p"'
 
 fpath=("$BOOSTISH_CONFIG_DIR/_completions" $fpath)
+for _boostish_comp_dir in "$BOOSTISH_CONFIG_DIR"/plugins/*/completions(N/); do
+  fpath=("$_boostish_comp_dir" $fpath)
+done
+typeset -gU fpath FPATH
 
 # Force custom completions to win if a system function was already loaded.
 unfunction _ansible 2>/dev/null
 
+: ${BOOSTISH_CACHE_DIR:="${XDG_CACHE_HOME:-$HOME/.cache}/boostish"}
+if [[ ! -d "$BOOSTISH_CACHE_DIR" || ! -w "$BOOSTISH_CACHE_DIR" ]]; then
+  mkdir -p "$BOOSTISH_CACHE_DIR" 2>/dev/null || true
+fi
+if [[ ! -d "$BOOSTISH_CACHE_DIR" || ! -w "$BOOSTISH_CACHE_DIR" ]]; then
+  BOOSTISH_CACHE_DIR="${TMPDIR:-/tmp}/boostish-${UID}"
+  mkdir -p "$BOOSTISH_CACHE_DIR"
+fi
+typeset -g BOOSTISH_CACHE_DIR
+typeset -g ZSH_COMPDUMP="${ZSH_COMPDUMP:-$BOOSTISH_CACHE_DIR/.zcompdump-${HOST}-${ZSH_VERSION}}"
+typeset -gi _boostish_compdump_rebuild=0
+
+if [[ ! -s "$ZSH_COMPDUMP" ]]; then
+  _boostish_compdump_rebuild=1
+fi
+
+if (( !_boostish_compdump_rebuild )) && [[ "$BOOSTISH_CONFIG_DIR/20-completions.zsh" -nt "$ZSH_COMPDUMP" ]]; then
+  _boostish_compdump_rebuild=1
+fi
+
+if (( !_boostish_compdump_rebuild )); then
+  for _boostish_comp_file in "$BOOSTISH_CONFIG_DIR"/_completions/*(N.); do
+    if [[ "$_boostish_comp_file" -nt "$ZSH_COMPDUMP" ]]; then
+      _boostish_compdump_rebuild=1
+      break
+    fi
+  done
+fi
+
+if (( !_boostish_compdump_rebuild )); then
+  for _boostish_comp_file in "$BOOSTISH_CONFIG_DIR"/plugins/*/completions/*(N.); do
+    if [[ "$_boostish_comp_file" -nt "$ZSH_COMPDUMP" ]]; then
+      _boostish_compdump_rebuild=1
+      break
+    fi
+  done
+fi
+
 autoload -Uz compinit
-compinit -u
+if (( _boostish_compdump_rebuild )); then
+  compinit -u -d "$ZSH_COMPDUMP"
+else
+  compinit -u -C -d "$ZSH_COMPDUMP"
+fi
+
+if [[ -s "$ZSH_COMPDUMP" && ( ! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc" ) ]]; then
+  zcompile "$ZSH_COMPDUMP" &!
+fi
+
+unset _boostish_compdump_rebuild _boostish_comp_file _boostish_comp_dir
 
 # Zinit completion (after compinit)
 autoload -Uz _zinit

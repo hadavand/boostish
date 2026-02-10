@@ -82,10 +82,6 @@ if (( $+commands[bat] )); then
   alias bat='bat --paging=never'
 fi
 
-if (( $+commands[subl] )); then
-  alias subl='subl -a'
-fi
-
 if (( $+commands[docker] )); then
   alias dbl='docker buildx build'
   alias dii='docker image inspect'
@@ -117,4 +113,4 @@ if (( $+commands[docker] )); then
   alias dck="docker compose kill"
 fi
 
-alias recomp='rm -f ~/.zcompdump*; autoload -Uz compinit; compinit -u'
+alias recomp='rm -f ~/.zcompdump* "${XDG_CACHE_HOME:-$HOME/.cache}"/zsh/.zcompdump* "${XDG_CACHE_HOME:-$HOME/.cache}"/boostish/.zcompdump*; autoload -Uz compinit; compinit -u'
