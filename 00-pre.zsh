@@ -81,16 +81,3 @@ export BAT_THEME_DARK="OneHalfDark"
 if [[ -f "${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}/10-fzf.zsh" ]]; then
   source "${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}/10-fzf.zsh"
 fi
-
-if [[ -d "$HOME/.volta/bin" ]]; then
-  export VOLTA_HOME="$HOME/.volta"
-  export PATH="$VOLTA_HOME/bin:$PATH"
-fi
-
-# golang
-if [[ -d /usr/local/go ]]; then
-  export GOROOT=/usr/local/go
-  [[ -d "$HOME/go" ]] || mkdir -p "$HOME/go"
-  export GOPATH=$HOME/go
-  export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-fi

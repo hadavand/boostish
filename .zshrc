@@ -17,6 +17,8 @@ zinit light-mode for \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-rust
 
+boostish_source 20-completions.zsh
+
 # Plugins --------------------
 zinit ice depth=1
 zinit light zsh-users/zsh-autosuggestions
@@ -34,8 +36,6 @@ zinit snippet OMZP::git
 zinit snippet OMZP::bgnotify
 zinit snippet OMZP::encode64
 zinit snippet OMZP::gh
-
-boostish_source 20-completions.zsh
 
 # fzf (manual preferred; fallback to zinit)
 if [[ ! -d "$HOME/.fzf" ]]; then
