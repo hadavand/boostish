@@ -43,10 +43,145 @@ bgnotify_formatted() {
 
 weather() { local city=${*:-Tehran}; curl -s "http://wttr.in/${city// /+}"; }
 
+: ${BOOSTISH_MYIP_GEO_URL:=https://api.ip.sb/geoip}
+: ${BOOSTISH_MYIP_IP_URL:=https://4.ident.me}
+: ${BOOSTISH_MYIP_PROXY_URL:=127.0.0.1:10808}
+: ${BOOSTISH_MYIP_TIMEOUT:=8}
+: ${BOOSTISH_MYIP_USER_AGENT:=boostish-myip}
+
+_boostish_myip_proxy_http() {
+  local dir="${BOOSTISH_PROXY_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish/proxy}"
+  local f="$dir/http"
+  local proxy_url
+
+  if [[ -r "$f" ]]; then
+    proxy_url="$(<"$f")"
+    [[ -n "$proxy_url" ]] && { print -r -- "$proxy_url"; return 0; }
+  fi
+
+  print -r -- "${BOOSTISH_PROXY_HTTP:-${BOOSTISH_MYIP_PROXY_URL:-127.0.0.1:10808}}"
+}
+
+_boostish_myip_usage() {
+  cat <<'EOF'
+Usage: myip [--json|--ip] [--proxy|--direct|--domestic] [options]
+
+Output:
+  --json, --geo, --geoip   Show pretty geoip JSON (default)
+  --ip, --raw              Show only the public IP
+
+Route:
+  --env                    Use current curl/proxy environment (default)
+  --proxy                  Use Boostish stored HTTP proxy
+  --proxy-url [URL]        Use an explicit HTTP proxy URL (default: 127.0.0.1:10808)
+  --direct, --domestic     Ignore proxy env for this request
+
+Options:
+  --timeout SECONDS        Curl timeout (default: 8)
+  --url URL                Override lookup URL for the selected output
+  -h, --help               Show this help
+EOF
+}
+
+myip() {
+  local mode=geo route=env timeout="${BOOSTISH_MYIP_TIMEOUT:-8}"
+  local url="" proxy_url="" curl_bin body
+  local -a curl_args cmd
+
+  while (( $# )); do
+    case "$1" in
+      --json|--geo|--geoip)
+        mode=geo
+        ;;
+      --ip|--raw)
+        mode=ip
+        ;;
+      --env|--current)
+        route=env
+        ;;
+      --proxy)
+        route=proxy
+        ;;
+      --proxy-url|--http-proxy)
+        route=proxy
+        if (( $# > 1 )) && [[ "$2" != -* ]]; then
+          proxy_url="$2"
+          shift
+        else
+          proxy_url="${BOOSTISH_MYIP_PROXY_URL:-127.0.0.1:10808}"
+        fi
+        ;;
+      --direct|--domestic|--no-proxy)
+        route=direct
+        ;;
+      --timeout)
+        shift
+        [[ "$1" == <-> ]] || { echo "myip: --timeout requires seconds" >&2; return 2; }
+        timeout="$1"
+        ;;
+      --url)
+        shift
+        [[ -n "$1" ]] || { echo "myip: --url requires a value" >&2; return 2; }
+        url="$1"
+        ;;
+      '-h'|'--help')
+        _boostish_myip_usage
+        return 0
+        ;;
+      *)
+        echo "myip: unknown option '$1'" >&2
+        _boostish_myip_usage >&2
+        return 2
+        ;;
+    esac
+    shift
+  done
+
+  curl_bin="$(command -v curl)" || { echo "myip: curl not found" >&2; return 127; }
+  if [[ "$mode" == geo ]] && ! command -v jq >/dev/null 2>&1; then
+    echo "myip: jq not found" >&2
+    return 127
+  fi
+
+  [[ -n "$url" ]] || {
+    if [[ "$mode" == ip ]]; then
+      url="${BOOSTISH_MYIP_IP_URL:-https://4.ident.me}"
+    else
+      url="${BOOSTISH_MYIP_GEO_URL:-https://api.ip.sb/geoip}"
+    fi
+  }
+
+  curl_args=(-fsSL -k --max-time "$timeout" --connect-timeout "$timeout" -H "user-agent: ${BOOSTISH_MYIP_USER_AGENT:-boostish-myip}")
+
+  case "$route" in
+    proxy)
+      [[ -n "$proxy_url" ]] || proxy_url="$(_boostish_myip_proxy_http)"
+      curl_args+=(--proxy "$proxy_url" --noproxy "")
+      cmd=("$curl_bin")
+      ;;
+    direct)
+      curl_args+=(--noproxy "*")
+      cmd=(env -u http_proxy -u https_proxy -u ftp_proxy -u rsync_proxy -u all_proxy -u no_proxy -u HTTP_PROXY -u HTTPS_PROXY -u FTP_PROXY -u RSYNC_PROXY -u ALL_PROXY -u NO_PROXY "$curl_bin")
+      ;;
+    env)
+      cmd=("$curl_bin")
+      ;;
+    *)
+      echo "myip: invalid route '$route'" >&2
+      return 2
+      ;;
+  esac
+
+  body="$("${cmd[@]}" "${curl_args[@]}" "$url")" || return $?
+  if [[ "$mode" == geo ]]; then
+    print -r -- "$body" | jq .
+  else
+    print -r -- "$body"
+  fi
+}
+
 geoip() {
-  command -v curl >/dev/null 2>&1 || { echo "geoip: curl not found"; return 127; }
-  command -v jq >/dev/null 2>&1 || { echo "geoip: jq not found"; return 127; }
-  curl -s -k https://api.ip.sb/geoip -H 'user-agent: boostish-proxy' | jq
+  myip --json "$@"
 }
 
 passgen() {

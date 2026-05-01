@@ -1,0 +1,54 @@
+#compdef myip geoip
+
+_myip() {
+  local -a opts urls proxies
+
+  opts=(
+    '--json:show pretty geoip JSON'
+    '--geo:show pretty geoip JSON'
+    '--geoip:show pretty geoip JSON'
+    '--ip:show only the public IP'
+    '--raw:show only the public IP'
+    '--env:use current curl/proxy environment'
+    '--current:use current curl/proxy environment'
+    '--proxy:use Boostish stored HTTP proxy'
+    '--direct:ignore proxy env for this request'
+    '--domestic:ignore proxy env for this request'
+    '--no-proxy:ignore proxy env for this request'
+    '--timeout:curl timeout in seconds'
+    '--url:override lookup URL'
+    '--proxy-url:use explicit HTTP proxy URL (default: 127.0.0.1:10808)'
+    '--http-proxy:use explicit HTTP proxy URL (default: 127.0.0.1:10808)'
+    '--help:show help'
+    '-h:show help'
+  )
+
+  urls=(
+    'https://api.ip.sb/geoip:geoip JSON'
+    'https://4.ident.me:plain IP'
+    'http://ident.me:plain IP'
+  )
+
+  proxies=(
+    '127.0.0.1:10808:default mixed port'
+    'http://127.0.0.1:10808:default mixed port with scheme'
+    'http://127.0.0.1:8080:common HTTP port'
+  )
+
+  case "${words[CURRENT-1]}" in
+    --timeout)
+      _describe -t values 'seconds' '(1 3 5 8 10 15)'
+      return
+      ;;
+    --url)
+      _describe -t urls 'lookup URL' urls
+      return
+      ;;
+    --proxy-url|--http-proxy)
+      _describe -t proxies 'proxy URL' proxies
+      return
+      ;;
+  esac
+
+  _describe -t options 'myip option' opts
+}
