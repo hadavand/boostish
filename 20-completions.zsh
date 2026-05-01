@@ -88,3 +88,14 @@ compinit -u
 # Zinit completion (after compinit)
 autoload -Uz _zinit
 compdef _zinit zinit
+
+# Kubernetes / OpenShift CLI completion
+if (( $+commands[kubectl] )); then
+  source <(kubectl completion zsh)
+  compdef _kubectl kubectl k
+fi
+
+if (( $+commands[oc] )); then
+  source <(oc completion zsh)
+  compdef _oc oc o
+fi

@@ -116,4 +116,34 @@ if (( $+commands[docker] )); then
   alias dck="docker compose kill"
 fi
 
+if (( $+commands[kubectl] )); then
+  alias k='kubectl'
+  alias kg='kubectl get'
+  alias kd='kubectl describe'
+  alias ka='kubectl apply'
+  alias kdel='kubectl delete'
+  alias kl='kubectl logs'
+  alias klf='kubectl logs -f'
+  alias kex='kubectl exec'
+  alias kexit='kubectl exec -it'
+  alias kctx='kubectl config current-context'
+  alias kctxs='kubectl config get-contexts'
+  alias kns='kubectl config set-context --current --namespace'
+fi
+
+if (( $+commands[oc] )); then
+  alias o='oc'
+  alias og='oc get'
+  alias od='oc describe'
+  alias oa='oc apply'
+  alias odel='oc delete'
+  alias ol='oc logs'
+  alias olf='oc logs -f'
+  alias oex='oc exec'
+  alias oexit='oc exec -it'
+  alias ologin='oc login'
+  alias op='oc project'
+  alias ops='oc projects'
+fi
+
 alias recomp='rm -f ~/.zcompdump*; autoload -Uz compinit; compinit -u'
