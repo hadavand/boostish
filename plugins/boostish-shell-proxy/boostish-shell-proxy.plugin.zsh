@@ -6,6 +6,12 @@
 : ${BOOSTISH_PROXY_NO_PROXY:="localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,*.local"}
 : ${BOOSTISH_PROXY_GIT_TYPE:=socks}
 : ${BOOSTISH_PROXY_APT_NO_PROXY:="calix.vanaboom.ir"}
+: ${BOOSTISH_PROXY_AUTO:=1}
+: ${BOOSTISH_PROXY_AUTO_APT:=0}
+: ${BOOSTISH_PROXY_AUTO_VERBOSE:=0}
+: ${BOOSTISH_PROXY_HEALTH:=1}
+: ${BOOSTISH_PROXY_HEALTH_TIMEOUT:=1}
+: ${BOOSTISH_PROXY_HEALTH_URL:=}
 
 _bxp_file() { print -r -- "$BOOSTISH_PROXY_DIR/$1"; }
 _bxp_msg() { print -r -- "$@"; }
@@ -62,6 +68,94 @@ _bxp_norm_socks() {
   local v="$1"
   [[ -z "$v" ]] && { _bxp_err "proxy: missing socks url"; return 1; }
   [[ "$v" == *://* ]] && print -r -- "$v" || print -r -- "socks5h://$v"
+}
+
+_bxp_bool_on() {
+  case "${1:l}" in
+    1|yes|true|on|enable|enabled) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+_bxp_bool_off() {
+  case "${1:l}" in
+    0|no|false|off|disable|disabled) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+_bxp_url_host_port() {
+  local url="$1" scheme rest host port
+  scheme="${url%%://*}"
+  rest="$url"
+  [[ "$url" == *://* ]] && rest="${url#*://}"
+  rest="${rest%%/*}"
+  rest="${rest##*@}"
+
+  if [[ "$rest" == \[*\]:* ]]; then
+    host="${rest#\[}"
+    host="${host%%\]*}"
+    port="${rest##*\]:}"
+  else
+    host="${rest%%:*}"
+    port="${rest##*:}"
+    [[ "$host" == "$port" ]] && port=""
+  fi
+
+  if [[ -z "$port" ]]; then
+    case "$scheme" in
+      http) port=80 ;;
+      https) port=443 ;;
+      socks*) port=1080 ;;
+      *) return 1 ;;
+    esac
+  fi
+
+  [[ -n "$host" && -n "$port" ]] || return 1
+  print -r -- "$host $port"
+}
+
+_bxp_tcp_open() {
+  local host="$1" port="$2" timeout="${3:-1}" fd
+  if command -v nc >/dev/null 2>&1; then
+    nc -z -w "$timeout" "$host" "$port" >/dev/null 2>&1
+    return $?
+  fi
+
+  zmodload zsh/net/tcp 2>/dev/null || return 1
+  ztcp "$host" "$port" >/dev/null 2>&1 || return 1
+  fd="$REPLY"
+  ztcp -c "$fd" >/dev/null 2>&1 || true
+  return 0
+}
+
+_bxp_health() {
+  _bxp_read
+  _bxp_bool_off "$BOOSTISH_PROXY_HEALTH" && return 0
+
+  local timeout="${BOOSTISH_PROXY_HEALTH_TIMEOUT:-1}"
+  if [[ -n "$BOOSTISH_PROXY_HEALTH_URL" ]]; then
+    command -v curl >/dev/null 2>&1 || return 1
+    curl -fsS --max-time "$timeout" --connect-timeout "$timeout" --proxy "$__BXP_HTTP" "$BOOSTISH_PROXY_HEALTH_URL" >/dev/null 2>&1
+    return $?
+  fi
+
+  local url hp host port
+  local -a checked
+  for url in "$__BXP_HTTP" "$__BXP_SOCKS"; do
+    hp="$(_bxp_url_host_port "$url")" || return 1
+    (( ${checked[(Ie)$hp]} )) && continue
+    checked+=("$hp")
+    host="${hp%% *}"
+    port="${hp##* }"
+    _bxp_tcp_open "$host" "$port" "$timeout" || return 1
+  done
+}
+
+_bxp_require_health() {
+  _bxp_health && return 0
+  _bxp_err "proxy: health check failed; not applying proxy config"
+  return 1
 }
 
 _bxp_env_on() {
@@ -245,6 +339,10 @@ _bxp_set() {
 }
 
 _bxp_myip() {
+  if command -v myip >/dev/null 2>&1; then
+    myip --json
+    return
+  fi
   if command -v geoip >/dev/null 2>&1; then
     geoip
     return
@@ -253,18 +351,56 @@ _bxp_myip() {
   curl -s -k https://4.ident.me -H 'user-agent: boostish-proxy'
 }
 
+_bxp_on() {
+  _bxp_read
+  _bxp_require_health || return $?
+  _bxp_env_on "$__BXP_HTTP" "$__BXP_SOCKS" "$__BXP_NO_PROXY"
+  _bxp_apply_all
+  _bxp_myip
+}
+
+_bxp_auto_apply() {
+  _bxp_bool_on "$BOOSTISH_PROXY_AUTO" || return 0
+  _bxp_read
+  if ! _bxp_health; then
+    _bxp_env_off
+    _bxp_bool_on "$BOOSTISH_PROXY_AUTO_VERBOSE" && _bxp_err "proxy: auto skipped; health check failed"
+    return 0
+  fi
+  _bxp_env_on "$__BXP_HTTP" "$__BXP_SOCKS" "$__BXP_NO_PROXY"
+  _bxp_apply_git
+  _bxp_apply_npm
+  _bxp_bool_on "$BOOSTISH_PROXY_AUTO_APT" && _bxp_apply_apt
+  _bxp_bool_on "$BOOSTISH_PROXY_AUTO_VERBOSE" && _bxp_msg "proxy: auto enabled"
+  return 0
+}
+
+_bxp_auto_precmd() {
+  add-zsh-hook -d precmd _bxp_auto_precmd 2>/dev/null || true
+  _bxp_auto_apply
+}
+
 proxy() {
   local cmd="${1:-on}"
   case "$cmd" in
     on|enable|start)
-      _bxp_read
-      _bxp_env_on "$__BXP_HTTP" "$__BXP_SOCKS" "$__BXP_NO_PROXY"
-      _bxp_apply_all
-      _bxp_myip
+      _bxp_on
       ;;
-    off|disable|stop|unset|clear)
+    off|disable|stop|unset)
       _bxp_env_off
       _bxp_clear_all
+      ;;
+    auto)
+      _bxp_auto_apply
+      ;;
+    check|health)
+      _bxp_read
+      if _bxp_health; then
+        _bxp_msg "proxy: healthy"
+      else
+        _bxp_err "proxy: health check failed"
+        return 1
+      fi
       ;;
     status|st)
       _bxp_status
@@ -280,11 +416,13 @@ proxy() {
       _bxp_set "$2" "$3" || return $?
       if _bxp_is_on; then
         _bxp_read
+        _bxp_require_health || return $?
         _bxp_env_on "$__BXP_HTTP" "$__BXP_SOCKS" "$__BXP_NO_PROXY"
         _bxp_apply_all
       fi
       ;;
     apply)
+      _bxp_require_health || return $?
       case "$2" in
         git) _bxp_apply_git ;;
         npm) _bxp_apply_npm ;;
@@ -295,16 +433,21 @@ proxy() {
       ;;
     clear)
       case "$2" in
+        all|"") _bxp_env_off; _bxp_clear_all ;;
         git) _bxp_clear_git ;;
         npm) _bxp_clear_npm ;;
         apt) _bxp_clear_apt ;;
-        all|"") _bxp_clear_all ;;
         *) _bxp_err "proxy: unknown target '$2'"; return 2 ;;
       esac
       ;;
     *)
-      _bxp_err "proxy: usage: proxy on|off|status|env|show|set|apply|clear"
+      _bxp_err "proxy: usage: proxy on|off|auto|check|status|env|show|set|apply|clear"
       return 2
       ;;
   esac
 }
+
+if [[ -o interactive ]]; then
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd _bxp_auto_precmd
+fi

@@ -12,6 +12,9 @@ _proxy() {
   cmds=(
     'on:enable proxy (env + apply + myip)'
     'off:disable proxy (env + clear)'
+    'auto:auto-enable proxy if health check passes'
+    'check:run proxy health check'
+    'health:run proxy health check'
     'status:show proxy status'
     'env:show proxy env vars'
     'show:show stored config'
