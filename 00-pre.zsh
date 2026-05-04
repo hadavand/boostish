@@ -7,9 +7,7 @@ _boostish_pure_p10k_terminal() {
   [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" || -n "$VSCODE_INTEGRATED_TERMINAL" || "$TERM_PROGRAM" == "vscode" ]]
 }
 
-if ! _boostish_pure_p10k_terminal && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+typeset -g __p9k_instant_prompt_disabled=1
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 if [[ ! -d "$ZINIT_HOME" ]]; then

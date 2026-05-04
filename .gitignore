@@ -1,3 +1,5 @@
 /.idea
 .vscode/*
 99-local.zsh
+90-p10k.zsh
+91-p10k-*.zsh

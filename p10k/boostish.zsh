@@ -130,3 +130,7 @@ typeset -g POWERLEVEL9K_PUBLIC_IP_METHODS=(curl)
 typeset -g POWERLEVEL9K_PUBLIC_IP_TIMEOUT=10
 
 unset POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION
+
+typeset -g POWERLEVEL9K_CONFIG_FILE="${BOOSTISH_P10K_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh}"
+
+(( ! $+functions[p10k] )) || p10k reload

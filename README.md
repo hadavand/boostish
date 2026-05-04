@@ -45,7 +45,7 @@ exec zsh
 - `40-functions.zsh`: helper functions
 - `50-highlightings.zsh`: syntax highlighting and autosuggest styles
 - `60-keybindings.zsh`: keybindings and ZLE helpers
-- `90-p10k.zsh`, `91-p10k-*.zsh`: Powerlevel10k configs
+- `p10k/boostish.zsh`: Boostish Powerlevel10k overlay
 - `98-post.zsh`: completions, PATH tweaks, and late init tasks
 - `99-local.zsh`: user overrides (sourced last; gitignored)
 
@@ -71,9 +71,14 @@ git rm --cached 99-local.zsh
 Any file matching `plugins/*/*.plugin.zsh` is sourced automatically. Drop your custom plugin snippets there.
 
 ## Powerlevel10k
-If the prompt looks wrong, install MesloLGS NF fonts and run:
+Boostish uses the upstream Powerlevel10k `p10k-rainbow.zsh` and `p10k-pure.zsh`
+configs, then applies the small `p10k/boostish.zsh` overlay for regular
+terminals. JetBrains and VS Code terminals use upstream Pure.
+
+If you run `p10k configure`, Boostish points Powerlevel10k at this personal
+config path outside the repo:
 ```sh
-p10k configure
+${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh
 ```
 
 ## Notes

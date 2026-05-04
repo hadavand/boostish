@@ -79,14 +79,27 @@ boostish_source 60-keybindings.zsh
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 
+boostish_p10k_dir="${ZINIT_HOME%/*}/plugins/romkatv---powerlevel10k"
+boostish_p10k_user_config="${BOOSTISH_P10K_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh}"
+
+boostish_source_p10k_config() {
+  local file="$boostish_p10k_dir/config/$1"
+  [[ -r "$file" ]] || return 1
+  source "$file"
+}
+
 if _boostish_pure_p10k_terminal; then
-  boostish_source 91-p10k-pure.zsh
+  boostish_source_p10k_config p10k-pure.zsh
+  typeset -g POWERLEVEL9K_CONFIG_FILE="$boostish_p10k_user_config"
 else
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-  boostish_source 91-p10k-boostish.zsh
+  boostish_source_p10k_config p10k-rainbow.zsh
+  boostish_source p10k/boostish.zsh
 fi
 
-unfunction _boostish_pure_p10k_terminal 2>/dev/null
+[[ -r "$boostish_p10k_user_config" ]] && source "$boostish_p10k_user_config"
+
+unset boostish_p10k_dir boostish_p10k_user_config
+unfunction _boostish_pure_p10k_terminal boostish_source_p10k_config 2>/dev/null
 
 boostish_source 98-post.zsh
 boostish_source 99-local.zsh
