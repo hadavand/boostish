@@ -18,6 +18,28 @@ displaytime() {
   printf '%s' "${(j: :)parts}"
 }
 
+bench_zsh_startup() {
+  local runs="${1:-20}" i
+
+  [[ "$runs" == <-> && "$runs" -gt 0 ]] || {
+    echo "Usage: bench_zsh_startup [runs]" >&2
+    return 2
+  }
+
+  for (( i = 1; i <= runs; i++ )); do
+    /usr/bin/time -f '%e' zsh -i -c exit >/dev/null
+  done 2>&1 | awk '/^[0-9.]+$/ {
+    n++
+    sum += $1
+    if (n == 1 || $1 < min) min = $1
+    if ($1 > max) max = $1
+  } END {
+    if (n > 0) {
+      printf "n=%d avg=%.3fs min=%.3fs max=%.3fs\n", n, sum / n, min, max
+    }
+  }'
+}
+
 bgnotify_threshold=3
 
 bgnotify_formatted() {
