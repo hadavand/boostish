@@ -79,16 +79,14 @@ boostish_source 60-keybindings.zsh
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 
-if [[ "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" || -n "$VSCODE_INTEGRATED_TERMINAL" || "$TERM_PROGRAM" == "vscode" ]]; then
-  boostish_p10k_file="91-p10k-pure.zsh"
+if _boostish_pure_p10k_terminal; then
+  boostish_source 91-p10k-pure.zsh
 else
-  boostish_p10k_file="91-p10k-boostish.zsh"
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+  boostish_source 91-p10k-boostish.zsh
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-boostish_source "$boostish_p10k_file"
+unfunction _boostish_pure_p10k_terminal 2>/dev/null
 
 boostish_source 98-post.zsh
 boostish_source 99-local.zsh
