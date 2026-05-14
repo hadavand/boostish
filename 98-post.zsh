@@ -28,7 +28,7 @@ _boostish_source_completion() {
   source "$completion_file"
 }
 
-for _boostish_completion_command in docker kubectl oc k9s codex helm; do
+for _boostish_completion_command in docker kubectl oc k9s codex helm crc podman minikube; do
   _boostish_source_completion "$_boostish_completion_command"
 done
 
