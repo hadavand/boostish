@@ -1,5 +1,16 @@
-/.idea
-.vscode/*
-99-local.zsh
-90-p10k.zsh
-91-p10k-*.zsh
+# Editor/project files
+/.idea/
+/.agents/
+/.vscode/
+
+# Local Boostish config
+/settings.zsh
+/99-local.zsh
+
+# Personal Powerlevel10k output and legacy local prompt files
+/90-p10k.zsh
+/91-p10k-*.zsh
+
+# Zsh-generated files
+/.zcompdump*
+*.zwc

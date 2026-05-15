@@ -28,11 +28,14 @@ _boostish_source_completion() {
   source "$completion_file"
 }
 
-for _boostish_completion_command in docker kubectl oc k9s codex helm crc podman minikube; do
-  _boostish_source_completion "$_boostish_completion_command"
-done
+typeset -ga BOOSTISH_COMPLETION_COMMANDS
+typeset -gA BOOSTISH_COMPLETION_SUBCOMMANDS
 
-_boostish_source_completion volta completions
+for _boostish_completion_command in "${BOOSTISH_COMPLETION_COMMANDS[@]}"; do
+  _boostish_source_completion \
+    "$_boostish_completion_command" \
+    "${BOOSTISH_COMPLETION_SUBCOMMANDS[$_boostish_completion_command]:-completion}"
+done
 
 unset _boostish_completion_cache_dir _boostish_completion_command
 unfunction _boostish_source_completion

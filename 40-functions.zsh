@@ -230,6 +230,34 @@ open() {
 
 browse() { google-chrome --new-tab "$@"; }
 
+boostish_clear_completion_cache() {
+  local cache_dir="${BOOSTISH_COMPLETION_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/boostish/completions}"
+  local cmd file
+  local -a files=()
+
+  if (( $# == 0 )); then
+    files=("$cache_dir"/_*(N))
+  else
+    for cmd in "$@"; do
+      if [[ -z "$cmd" || "$cmd" == */* ]]; then
+        echo "boostish_clear_completion_cache: invalid command '$cmd'" >&2
+        return 2
+      fi
+
+      file="$cache_dir/_$cmd"
+      [[ -e "$file" ]] && files+=("$file")
+    done
+  fi
+
+  if (( ${#files} == 0 )); then
+    echo "No completion cache files found."
+    return 0
+  fi
+
+  command rm -f -- "${files[@]}"
+  echo "Removed ${#files} completion cache file(s)."
+}
+
 # Default config (can be overridden before calling the function)
 typeset -g BOOSTISH_SSH_USER="${BOOSTISH_SSH_USER:-boostish}"
 typeset -g BOOSTISH_SSH_PREFIX="${BOOSTISH_SSH_PREFIX:-my-}"

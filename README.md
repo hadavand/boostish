@@ -7,7 +7,8 @@ Opinionated Zsh config with Zinit, fzf, and Powerlevel10k. The repo is split int
 - fzf defaults + fzf-tab integration
 - Aliases, functions, completions, keybindings, and syntax highlighting
 - Optional per-plugin files in `plugins/*/*.plugin.zsh`
-- Local override file sourced last (`99-local.zsh`)
+- Early `.zshenv` settings for opt-in generated completions
+- Optional local override file sourced last (`99-local.zsh`)
 
 ## Requirements
 Core:
@@ -49,14 +50,42 @@ exec zsh
 - `98-post.zsh`: completions, PATH tweaks, and late init tasks
 - `99-local.zsh`: user overrides (sourced last; gitignored)
 
-## Local overrides (99-local.zsh)
-`99-local.zsh` is sourced last and is not committed. Use it for machine-specific config.
+## Early settings (~/.zshenv)
+Use `~/.zshenv` only for lightweight variables that must exist before Boostish
+loads. Do not run commands, source plugins, or configure interactive behavior
+there; `.zshenv` is loaded by every `zsh` process.
 
 Example:
 ```sh
-# User overrides (sourced last).
-# Put machine or user-specific settings here.
+export CURRENT_USER=majid
+export CURRENT_GROUP=majid
 
+BOOSTISH_COMPLETION_COMMANDS=(docker kubectl helm podman)
+
+# Optional: commands whose generator subcommand is not "completion".
+BOOSTISH_COMPLETION_COMMANDS+=(volta)
+typeset -gA BOOSTISH_COMPLETION_SUBCOMMANDS=([volta]=completions)
+```
+
+`BOOSTISH_COMPLETION_COMMANDS` defaults to empty, so Boostish does not generate
+or source command completions unless you opt in.
+
+Generated completion files are cached under
+`${XDG_CACHE_HOME:-$HOME/.cache}/boostish/completions`. Clear them explicitly
+after command upgrades or completion changes:
+```sh
+boostish_clear_completion_cache
+boostish_clear_completion_cache kubectl helm
+```
+
+## Local overrides (99-local.zsh)
+`99-local.zsh` is sourced last and is not committed. Use it only for late
+interactive machine-specific config that does not need to be visible while the
+numbered files are loading. If your local config is just early variables,
+`~/.zshenv` is usually enough and this file can stay absent.
+
+Example:
+```sh
 BOOSTISH_SSH_PREFIX='server-'
 BOOSTISH_SSH_USER='jack'
 boostish_ssh_aliases_from_hosts
