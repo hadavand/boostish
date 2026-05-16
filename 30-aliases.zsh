@@ -117,6 +117,7 @@ if (( $+commands[docker] )); then
 fi
 
 if (( $+commands[kubectl] )); then
+  alias k='kubectl'
   alias kg='kubectl get'
   alias kd='kubectl describe'
   alias ka='kubectl apply'
