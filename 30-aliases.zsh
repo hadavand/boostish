@@ -2,7 +2,7 @@
 
 # ----- global pipe aliases -----
 alias -g B='| bat'
-alias -g C='| copyq add - && copyq select 0'
+alias -g C='| _boostish_clipboard_copy'
 alias -g G='| grep'
 alias -g H='| head'
 alias -g L="| less"

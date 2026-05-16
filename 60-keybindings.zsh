@@ -61,29 +61,22 @@ bindkey '^[OB' history-substring-search-down
 bindkey '^Z' undo
 
 boostish-copy-buffer() {
-  if builtin which copyq &>/dev/null; then
-    printf "%s" "$BUFFER" | copyq add - && copyq select 0
-  else
+  if ! _boostish_copyq_available; then
     zle -M "copyq not found"
+    return 1
+  fi
+
+  if ! printf "%s" "$BUFFER" | _boostish_copyq add - || ! _boostish_copyq select 0; then
+    zle -M "clipboard unavailable"
+    return 1
   fi
 }
 zle -N boostish-copy-buffer
 bindkey '^X^Y' boostish-copy-buffer
 
-autoload -Uz bracketed-paste-magic edit-command-line
-zle -N bracketed-paste bracketed-paste-magic
+autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
-
-boostish-paste() {
-  local text
-  text=$(copyq clipboard 2>/dev/null) || return
-  [[ -z $text ]] && return
-  text=${text%$'\n'}
-  LBUFFER+="$text"
-}
-zle -N boostish-paste
-bindkey '^X^V' boostish-paste
 
 boostish-abort-line() {
   BUFFER=""

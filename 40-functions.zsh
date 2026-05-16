@@ -40,6 +40,33 @@ bench_zsh_startup() {
   }'
 }
 
+: ${BOOSTISH_COPYQ_FLATPAK_ID:=com.github.hluk.copyq}
+
+_boostish_copyq_available() {
+  (( $+commands[copyq] || $+commands[flatpak] ))
+}
+
+_boostish_copyq() {
+  if (( $+commands[copyq] )); then
+    command copyq "$@"
+  elif (( $+commands[flatpak] )); then
+    command flatpak run "$BOOSTISH_COPYQ_FLATPAK_ID" "$@"
+  else
+    return 127
+  fi
+}
+
+_boostish_clipboard_copy() {
+  if ! _boostish_copyq_available; then
+    print -u2 "copyq not found"
+    return 1
+  fi
+
+  local text
+  text=$(<&0)
+  printf "%s" "$text" | _boostish_copyq add - && _boostish_copyq select 0
+}
+
 bgnotify_threshold=3
 
 bgnotify_formatted() {

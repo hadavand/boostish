@@ -15,7 +15,7 @@ Core:
 - zsh, git, curl
 
 Optional (used by some features):
-- fzf, bat, lsd, copyq, jq, tree, fd, helm, powerprofilesctl
+- fzf, bat, lsd, copyq or CopyQ Flatpak, jq, tree, fd, helm
 
 ## Quick start
 Clone the repo:
@@ -76,6 +76,8 @@ typeset -ga BOOSTISH_COMPLETION_COMMANDS=(docker kubectl helm podman volta)
 typeset -gA BOOSTISH_COMPLETION_SUBCOMMANDS=([volta]=completions)
 
 typeset -g BOOSTISH_ALIASES_EDITOR="${EDITOR:-vim}"
+typeset -g BOOSTISH_COPYQ_FLATPAK_ID="com.github.hluk.copyq"
+
 typeset -g BOOSTISH_PROXY_HTTP="http://127.0.0.1:10808"
 typeset -g BOOSTISH_PROXY_SOCKS="socks5h://127.0.0.1:10808"
 ```
