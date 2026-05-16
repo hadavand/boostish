@@ -13,7 +13,7 @@ function prompt_my_cpu_temp() {
 }
 
 typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-	# os_icon
+	os_icon
 	context
 	dir
 	vcs
@@ -23,40 +23,12 @@ typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
 
 typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
 	status
-	vi_mode
-	command_execution_time
-	background_jobs
-	asdf
-	virtualenv
-	pyenv
-	goenv
-	nodenv
-	nvm
-	nodeenv
-	node_version
-	go_version
-	php_version
-	laravel_version
-	java_version
-	package
-	luaenv
-	jenv
-	phpenv
-	vim_shell
-	# history
 	load
-	# ram
-	# disk_usage
 	my_cpu_temp
 	battery
 	time
 	newline
-	ip
-	# vpn_ip
 	public_ip
-	proxy
-	# wifi
-	kubecontext
 )
 
 typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION=' '
@@ -85,6 +57,9 @@ typeset -g POWERLEVEL9K_LOAD_CRITICAL_FOREGROUND="$P10K_SEGMENT_FG"
 
 typeset -g POWERLEVEL9K_VPN_IP_BACKGROUND='#00897b'
 typeset -g POWERLEVEL9K_VPN_IP_FOREGROUND="$P10K_SEGMENT_FG"
+
+typeset -g POWERLEVEL9K_PROXY_BACKGROUND='#00897b'
+typeset -g POWERLEVEL9K_PROXY_FOREGROUND="$P10K_SEGMENT_FG"
 
 typeset -g POWERLEVEL9K_IP_BACKGROUND='#00acc1'
 typeset -g POWERLEVEL9K_IP_FOREGROUND='#06252b'
@@ -138,6 +113,6 @@ typeset -g POWERLEVEL9K_PUBLIC_IP_TIMEOUT=10
 
 unset POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION
 
-typeset -g POWERLEVEL9K_CONFIG_FILE="${BOOSTISH_P10K_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh}"
+typeset -g POWERLEVEL9K_CONFIG_FILE="${BOOSTISH_P10K_CONFIG:-${BOOSTISH_USER_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish}/p10k.zsh}"
 
 (( ! $+functions[p10k] )) || p10k reload

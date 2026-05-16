@@ -7,8 +7,8 @@ Opinionated Zsh config with Zinit, fzf, and Powerlevel10k. The repo is split int
 - fzf defaults + fzf-tab integration
 - Aliases, functions, completions, keybindings, and syntax highlighting
 - Optional per-plugin files in `plugins/*/*.plugin.zsh`
-- Early `.zshenv` settings for opt-in generated completions
-- Optional local override file sourced last (`99-local.zsh`)
+- XDG user config files under `${XDG_CONFIG_HOME:-$HOME/.config}/boostish`
+- Optional late local override file sourced last
 
 ## Requirements
 Core:
@@ -48,10 +48,10 @@ exec zsh
 - `60-keybindings.zsh`: keybindings and ZLE helpers
 - `p10k/boostish.zsh`: Boostish Powerlevel10k overlay
 - `98-post.zsh`: completions, PATH tweaks, and late init tasks
-- `99-local.zsh`: user overrides (sourced last; gitignored)
+- `99-local.zsh`: legacy in-repo user overrides (gitignored)
 
 ## Early settings (~/.zshenv)
-Use `~/.zshenv` only for lightweight variables that must exist before Boostish
+Use `~/.zshenv` only for lightweight variables that must exist before `.zshrc`
 loads. Do not run commands, source plugins, or configure interactive behavior
 there; `.zshenv` is loaded by every `zsh` process.
 
@@ -59,12 +59,25 @@ Example:
 ```sh
 export CURRENT_USER=majid
 export CURRENT_GROUP=majid
+```
 
-BOOSTISH_COMPLETION_COMMANDS=(docker kubectl helm podman)
+## Boostish settings
+Use this file for user-owned Boostish variables:
+```sh
+${XDG_CONFIG_HOME:-$HOME/.config}/boostish/settings.zsh
+```
 
-# Optional: commands whose generator subcommand is not "completion".
-BOOSTISH_COMPLETION_COMMANDS+=(volta)
+It is sourced early, before plugins, aliases, functions, and Powerlevel10k
+defaults consume their settings. Keep it lightweight and variable-focused.
+
+Example:
+```zsh
+typeset -ga BOOSTISH_COMPLETION_COMMANDS=(docker kubectl helm podman volta)
 typeset -gA BOOSTISH_COMPLETION_SUBCOMMANDS=([volta]=completions)
+
+typeset -g BOOSTISH_ALIASES_EDITOR="${EDITOR:-vim}"
+typeset -g BOOSTISH_PROXY_HTTP="http://127.0.0.1:10808"
+typeset -g BOOSTISH_PROXY_SOCKS="socks5h://127.0.0.1:10808"
 ```
 
 `BOOSTISH_COMPLETION_COMMANDS` defaults to empty, so Boostish does not generate
@@ -78,20 +91,25 @@ boostish_clear_completion_cache
 boostish_clear_completion_cache kubectl helm
 ```
 
-## Local overrides (99-local.zsh)
-`99-local.zsh` is sourced last and is not committed. Use it only for late
-interactive machine-specific config that does not need to be visible while the
-numbered files are loading. If your local config is just early variables,
-`~/.zshenv` is usually enough and this file can stay absent.
+## Late local overrides
+Use this file for late interactive machine-specific config:
+```sh
+${XDG_CONFIG_HOME:-$HOME/.config}/boostish/local.zsh
+```
+
+It is sourced after Boostish has loaded plugins, functions, completions,
+Powerlevel10k, and `98-post.zsh`. Use `settings.zsh` instead if your local
+config is just `BOOSTISH_*` variables.
 
 Example:
-```sh
+```zsh
 BOOSTISH_SSH_PREFIX='server-'
 BOOSTISH_SSH_USER='jack'
 boostish_ssh_aliases_from_hosts
 ```
 
-If the file was ever added to git, remove it from the index:
+Legacy `~/.boostish/99-local.zsh` is still supported and is sourced just before
+`local.zsh`. If the legacy file was ever added to git, remove it from the index:
 ```sh
 git rm --cached 99-local.zsh
 ```
@@ -110,6 +128,10 @@ config path outside the repo:
 ${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh
 ```
 
+If this file exists, it is sourced after the upstream Powerlevel10k config and
+after `p10k/boostish.zsh`, so it overrides Boostish defaults. `p10k configure`
+manages this same file.
+
 ## Notes
-- `settings.zsh` is optional; if missing it is skipped.
+- User config files are optional; if missing, they are skipped.
 - fzf is loaded from `~/.fzf` if you have it installed; otherwise it is pulled via Zinit.

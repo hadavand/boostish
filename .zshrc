@@ -1,11 +1,20 @@
-BOOSTISH_CONFIG_DIR="$HOME/.boostish"
-export BOOSTISH_CONFIG_DIR
+BOOSTISH_CONFIG_DIR="${BOOSTISH_CONFIG_DIR:-$HOME/.boostish}"
+BOOSTISH_USER_CONFIG_DIR="${BOOSTISH_USER_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish}"
+export BOOSTISH_CONFIG_DIR BOOSTISH_USER_CONFIG_DIR
 
 boostish_source() {
   local file="$BOOSTISH_CONFIG_DIR/$1"
   [[ -r "$file" ]] || return 0
   source "$file"
 }
+
+boostish_source_user_config() {
+  local file="$BOOSTISH_USER_CONFIG_DIR/$1"
+  [[ -r "$file" ]] || return 0
+  source "$file"
+}
+
+boostish_source_user_config settings.zsh
 
 boostish_source 00-pre.zsh || return
 
@@ -80,7 +89,7 @@ zinit ice depth=1
 zinit light romkatv/powerlevel10k
 
 boostish_p10k_dir="${ZINIT_HOME%/*}/plugins/romkatv---powerlevel10k"
-boostish_p10k_user_config="${BOOSTISH_P10K_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh}"
+boostish_p10k_user_config="${BOOSTISH_P10K_CONFIG:-$BOOSTISH_USER_CONFIG_DIR/p10k.zsh}"
 
 boostish_source_p10k_config() {
   local file="$boostish_p10k_dir/config/$1"
@@ -103,3 +112,4 @@ unfunction _boostish_pure_p10k_terminal boostish_source_p10k_config 2>/dev/null
 
 boostish_source 98-post.zsh
 boostish_source 99-local.zsh
+boostish_source_user_config local.zsh

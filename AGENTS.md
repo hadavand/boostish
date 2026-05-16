@@ -10,17 +10,19 @@ into ordered files, and intended to stay easy to disable, override, or inspect.
 The main load order is:
 
 1. `.zshrc`
-2. `00-pre.zsh`
-3. `20-completions.zsh`
-4. Zinit-managed plugins and `plugins/*/*.plugin.zsh`
-5. `30-aliases.zsh`
-6. `40-functions.zsh`
-7. optional `settings.zsh`
-8. `50-highlightings.zsh`
-9. `60-keybindings.zsh`
-10. Powerlevel10k config and `p10k/boostish.zsh`
-11. `98-post.zsh`
-12. `99-local.zsh`
+2. optional `${XDG_CONFIG_HOME:-$HOME/.config}/boostish/settings.zsh`
+3. `00-pre.zsh`
+4. `20-completions.zsh`
+5. Zinit-managed plugins and `plugins/*/*.plugin.zsh`
+6. `30-aliases.zsh`
+7. `40-functions.zsh`
+8. optional legacy `settings.zsh`
+9. `50-highlightings.zsh`
+10. `60-keybindings.zsh`
+11. Powerlevel10k config, `p10k/boostish.zsh`, and user `p10k.zsh`
+12. `98-post.zsh`
+13. `99-local.zsh`
+14. optional `${XDG_CONFIG_HOME:-$HOME/.config}/boostish/local.zsh`
 
 ## File Ownership
 
@@ -59,7 +61,8 @@ The main load order is:
 - Do not make Zinit download more plugins unless the user asked for that feature
   and the dependency is justified.
 - Respect local overrides: committed defaults should be safe and generic, while
-  machine-specific values belong in `99-local.zsh` or `settings.zsh`.
+  machine-specific values belong under
+  `${XDG_CONFIG_HOME:-$HOME/.config}/boostish/`.
 - Avoid changing keybindings, global aliases, prompt behavior, proxy defaults, or
   history behavior incidentally. These are high-impact interactive surfaces.
 - For generated completions cached by `98-post.zsh`, keep cache paths under
