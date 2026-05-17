@@ -122,7 +122,8 @@ Any file matching `plugins/*/*.plugin.zsh` is sourced automatically. Drop your c
 ## Powerlevel10k
 Boostish uses the upstream Powerlevel10k `p10k-rainbow.zsh` and `p10k-pure.zsh`
 configs, then applies the small `p10k/boostish.zsh` overlay for regular
-terminals. JetBrains and VS Code terminals use upstream Pure.
+terminals. JetBrains and VS Code terminals use upstream Pure and skip personal
+Powerlevel10k overrides.
 
 If you run `p10k configure`, Boostish points Powerlevel10k at this personal
 config path outside the repo:
@@ -130,9 +131,9 @@ config path outside the repo:
 ${XDG_CONFIG_HOME:-$HOME/.config}/boostish/p10k.zsh
 ```
 
-If this file exists, it is sourced after the upstream Powerlevel10k config and
-after `p10k/boostish.zsh`, so it overrides Boostish defaults. `p10k configure`
-manages this same file.
+In regular terminals, if this file exists, it is sourced after the upstream
+Powerlevel10k config and after `p10k/boostish.zsh`, so it overrides Boostish
+defaults. `p10k configure` manages this same file.
 
 ## Notes
 - User config files are optional; if missing, they are skipped.

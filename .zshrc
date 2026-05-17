@@ -103,9 +103,8 @@ if _boostish_pure_p10k_terminal; then
 else
   boostish_source_p10k_config p10k-rainbow.zsh
   boostish_source p10k/boostish.zsh
+  [[ -r "$boostish_p10k_user_config" ]] && source "$boostish_p10k_user_config"
 fi
-
-[[ -r "$boostish_p10k_user_config" ]] && source "$boostish_p10k_user_config"
 
 unset boostish_p10k_dir boostish_p10k_user_config
 unfunction _boostish_pure_p10k_terminal boostish_source_p10k_config 2>/dev/null
