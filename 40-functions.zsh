@@ -93,7 +93,7 @@ bgnotify_formatted() {
 weather() { local city=${*:-Tehran}; curl -s "http://wttr.in/${city// /+}"; }
 
 : ${BOOSTISH_MYIP_GEO_URL:=https://api.ip.sb/geoip}
-: ${BOOSTISH_MYIP_IP_URL:=https://4.ident.me}
+: ${BOOSTISH_MYIP_IP_URL:=https://icanhazip.com}
 : ${BOOSTISH_MYIP_PROXY_URL:=127.0.0.1:10808}
 : ${BOOSTISH_MYIP_TIMEOUT:=8}
 : ${BOOSTISH_MYIP_USER_AGENT:=boostish-myip}
@@ -194,7 +194,7 @@ myip() {
 
   [[ -n "$url" ]] || {
     if [[ "$mode" == ip ]]; then
-      url="${BOOSTISH_MYIP_IP_URL:-https://4.ident.me}"
+      url="${BOOSTISH_MYIP_IP_URL:-https://icanhazip.com}"
     else
       url="${BOOSTISH_MYIP_GEO_URL:-https://api.ip.sb/geoip}"
     fi
@@ -458,4 +458,8 @@ docker_app_aliases_toggle() {
   else
     docker_app_aliases_on
   fi
+}
+
+codex-vana() {
+  CODEX_HOME="$HOME/.codex-vana" codex "$@"
 }

@@ -1,0 +1,65 @@
+#compdef govc
+
+(( $+commands[govc] )) || return 1
+
+_govc__commands() {
+  if (( ! ${+_govc_commands_cache} )); then
+    typeset -g -a _govc_commands_cache
+    _govc_commands_cache=(
+      "${(@f)$(
+        command govc help 2>/dev/null |
+          awk '/^Available commands:/{show=1; next} show && $1 ~ /^[[:alnum:]_.-]+$/ {print $1}'
+      )}"
+    )
+  fi
+
+  (( ${#_govc_commands_cache} )) || return 1
+  _describe -t commands 'govc command' _govc_commands_cache
+}
+
+_govc__options() {
+  local command_name="$1"
+  local line option description
+  local -a options descriptions help_lines
+
+  if [[ -n "$command_name" ]]; then
+    help_lines=("${(@f)$(command govc "$command_name" -h 2>/dev/null)}")
+  else
+    help_lines=("${(@f)$(command govc help 2>/dev/null)}")
+  fi
+
+  for line in "${help_lines[@]}"; do
+    if [[ "$line" =~ '^[[:space:]]+(-[[:alnum:]._-]+=?[^[:space:]]*)[[:space:]]+(.*)$' ]]; then
+      option="${match[1]}"
+      description="${match[2]}"
+
+      option="${option%%=*}"
+      [[ "${match[1]}" == *=* ]] && option="${option}="
+
+      options+=("$option")
+      descriptions+=("$description")
+    fi
+  done
+
+  (( ${#options} )) || return 1
+  compadd -d descriptions -- "${options[@]}"
+}
+
+_govc() {
+  local ret=1
+
+  if [[ "$words[CURRENT]" == -* ]]; then
+    _govc__options "${words[2]}" && ret=0
+    return ret
+  fi
+
+  if (( CURRENT == 2 )); then
+    _govc__commands && ret=0
+    return ret
+  fi
+
+  _files && ret=0
+  return ret
+}
+
+_govc "$@"
