@@ -103,13 +103,6 @@ It is sourced after Boostish has loaded plugins, functions, completions,
 Powerlevel10k, and `98-post.zsh`. Use `settings.zsh` instead if your local
 config is just `BOOSTISH_*` variables.
 
-Example:
-```zsh
-BOOSTISH_SSH_PREFIX='server-'
-BOOSTISH_SSH_USER='jack'
-boostish_ssh_aliases_from_hosts
-```
-
 Legacy `~/.boostish/99-local.zsh` is still supported and is sourced just before
 `local.zsh`. If the legacy file was ever added to git, remove it from the index:
 ```sh
