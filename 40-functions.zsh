@@ -22,6 +22,10 @@ bench_zsh_startup() {
   }'
 }
 
+zombies() {
+  command ps -eal | awk '$2 == "Z" { print $4 }'
+}
+
 ## Clipboard and notifications
 
 : ${BOOSTISH_COPYQ_FLATPAK_ID:=com.github.hluk.copyq}
@@ -278,6 +282,12 @@ browse() {
 
 ## Boostish maintenance
 
+recomp() {
+  command rm -f ~/.zcompdump*
+  autoload -Uz compinit
+  compinit -u
+}
+
 boostish_clear_completion_cache() {
   local cache_dir="${BOOSTISH_COMPLETION_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/boostish/completions}"
   local cmd file
@@ -304,4 +314,16 @@ boostish_clear_completion_cache() {
 
   command rm -f -- "${files[@]}"
   echo "Removed ${#files} completion cache file(s)."
+}
+
+## Docker helpers
+
+docker_stop_all() {
+  (( $+commands[docker] )) || { print -u2 "docker_stop_all: docker not found"; return 127; }
+
+  local -a containers
+  containers=("${(@f)$(command docker ps -q)}")
+  (( ${#containers} )) || { print -r -- "No running containers."; return 0; }
+
+  command docker stop "${containers[@]}"
 }

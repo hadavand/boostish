@@ -17,52 +17,34 @@ alias -g NUL="> /dev/null 2>&1"
 # ----- suffix aliases -----
 alias -s zsh="$BOOSTISH_ALIASES_EDITOR"
 
-# navigation
+# ----- shell basics -----
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias -- -='cd -'
 
-# mkdir helpers
 alias md='mkdir -p'
 alias rd='rmdir'
-
-# disk usage
 alias df='df -h'
 alias du='du -h'
-
-# zero file
 alias zap=': >'
 alias zap0='truncate -s0 --'
 
-# colored grep
+# ----- display helpers -----
 alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
 alias fgrep='fgrep --colour=auto'
 
-function ip() {
-  if [ -t 1 ]; then
-    command ip -color "$@"
-  else
-    command ip "$@"
-  fi
-}
-
-function zombies() {
-  ps -eal | awk '{ if ($2 == "Z") {print $4}}'
-}
-
-alias pg='ping 8.8.8.8 -c 5'
 alias paths='print -l $path'
 alias fpaths='print -l $fpath'
 alias history='fc -il 1'
 alias hist10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
 
-alias python="python3"
-alias apu="sudo apt update"
-alias apug="sudo apt upgrade"
-alias persianfonts='fc-list :lang=fa : family | sort | uniq | pr -3t'
+if (( $+commands[bat] )); then
+  alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
+  alias bat='bat --paging=never'
+fi
 
 if (( $+commands[lsd] )); then
   unalias ls l la lt 2>/dev/null
@@ -72,17 +54,29 @@ if (( $+commands[lsd] )); then
   alias lt='ls --tree'
 fi
 
-if (( $+commands[ansible-playbook] )); then
-  alias ap='ansible-playbook'
+# ----- system helpers -----
+alias pg='ping 8.8.8.8 -c 5'
+
+if (( $+commands[ip] )); then
+  alias ip='ip -color=auto'
 fi
 
-if (( $+commands[bat] )); then
-  alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
-  alias bat='bat --paging=never'
+if (( ! $+commands[python] && $+commands[python3] )); then
+  alias python='python3'
 fi
 
+if (( $+commands[fc-list] && $+commands[pr] )); then
+  alias persianfonts='fc-list :lang=fa : family | sort | uniq | pr -3t'
+fi
+
+# ----- editor helpers -----
 if (( $+commands[subl] )); then
   alias subl='subl -a'
+fi
+
+# ----- command shortcuts -----
+if (( $+commands[ansible-playbook] )); then
+  alias ap='ansible-playbook'
 fi
 
 if (( $+commands[docker] )); then
@@ -97,7 +91,6 @@ if (( $+commands[docker] )); then
   alias dxc='docker container exec'
   alias dxcit='docker container exec -it'
   alias dps='docker ps'
-  alias dsta='docker stop $(docker ps -q)'
   alias dni='docker network inspect'
   alias dnls='docker network ls'
   alias dvi='docker volume inspect'
@@ -144,5 +137,3 @@ if (( $+commands[oc] )); then
   alias op='oc project'
   alias ops='oc projects'
 fi
-
-alias recomp='rm -f ~/.zcompdump*; autoload -Uz compinit; compinit -u'
